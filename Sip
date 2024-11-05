@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIP Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background-color: #f8f9fa;
+    }
+    .calculator {
+      max-width: 400px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .calculator h2 {
+      text-align: center;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <h2>SIP Calculator</h2>
+  <div class="form-group">
+    <label for="monthlyInvestment">Monthly Investment (₹):</label>
+    <input type="number" id="monthlyInvestment" placeholder="Enter amount" required>
+  </div>
+  <div class="form-group">
+    <label for="investmentPeriod">Investment Period (years):</label>
+    <input type="number" id="investmentPeriod" placeholder="Enter years" required>
+  </div>
+  <div class="form-group">
+    <label for="expectedReturn">Expected Annual Return Rate (%):</label>
+    <input type="number" id="expectedReturn" placeholder="Enter rate" required>
+  </div>
+  <button onclick="calculateSIP()">Calculate</button>
+  <div class="result" id="result"></div>
+</div>
+
+<script>
+  function calculateSIP() {
+    const monthlyInvestment = parseFloat(document.getElementById("monthlyInvestment").value);
+    const investmentPeriod = parseFloat(document.getElementById("investmentPeriod").value);
+    const expectedReturn = parseFloat(document.getElementById("expectedReturn").value) / 100;
+
+    const months = investmentPeriod * 12;
+    const monthlyRate = expectedReturn / 12;
+    
+    const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+
+    document.getElementById("result").innerHTML = `Maturity Amount: ₹${maturityAmount.toFixed(2)}`;
+  }
+</script>
+
+</body>
+</html>
