@@ -118,21 +118,38 @@
     // Maturity Amount Calculation using Future Value of an Annuity formula
     const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
 
-    // Convert numbers to words
     document.getElementById("result").innerHTML = `
       Total Invested Amount: ₹${investedAmount.toFixed(2)} (${convertToWords(investedAmount)})<br>
       Estimated Maturity Amount: ₹${maturityAmount.toFixed(2)} (${convertToWords(maturityAmount)})
     `;
   }
 
-  function convertToWords(num) {
+  function convertToWords(amount) {
     const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
     const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
     const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
     const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
 
-    if (num === 0) return "zero";
+    if (amount === 0) return "zero";
+
+    // Split amount into rupees and paise
+    const [rupees, paise] = amount.toFixed(2).split('.').map(Number);
+    let words = convertPartToWords(rupees) + " rupees";
+
+    if (paise > 0) {
+      words += " and " + convertPartToWords(paise) + " paisa";
+    }
+    return words.trim();
+  }
+
+  function convertPartToWords(num) {
+    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
+
     let words = "";
+    let scaleIndex = 0;
 
     function getPartInWords(number) {
       if (number < 10) return units[number];
@@ -141,7 +158,6 @@
       return units[Math.floor(number / 100)] + " hundred " + (number % 100 === 0 ? "" : "and " + getPartInWords(number % 100));
     }
 
-    let scaleIndex = 0;
     while (num > 0) {
       let part;
       if (scaleIndex === 0) {
