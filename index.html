@@ -5,41 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SIP Calculator</title>
   <style>
-    body {
+    /* Basic Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
       font-family: Arial, sans-serif;
+    }
+    /* Body and Calculator Container */
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
-      background-color: #f8f9fa;
+      background-color: #f0f2f5;
+      color: #333;
     }
     .calculator {
+      width: 100%;
       max-width: 400px;
       padding: 20px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
     }
     .calculator h2 {
       text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
     }
+    /* Form Styles */
     .form-group {
       margin-bottom: 15px;
     }
     .form-group label {
       display: block;
       margin-bottom: 5px;
+      font-weight: bold;
     }
     .form-group input {
       width: 100%;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
     }
+    .form-group input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    }
+    /* Button Styles */
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    /* Result Styles */
     .result {
       margin-top: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border-radius: 6px;
+      font-size: 16px;
       font-weight: bold;
+      color: #333;
     }
   </style>
 </head>
@@ -71,10 +111,53 @@
 
     const months = investmentPeriod * 12;
     const monthlyRate = expectedReturn / 12;
-    
+
+    // Total Invested Amount
+    const investedAmount = monthlyInvestment * months;
+
+    // Maturity Amount Calculation using Future Value of an Annuity formula
     const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
 
-    document.getElementById("result").innerHTML = `Maturity Amount: ₹${maturityAmount.toFixed(2)}`;
+    // Convert numbers to words
+    document.getElementById("result").innerHTML = `
+      Total Invested Amount: ₹${investedAmount.toFixed(2)} (${convertToWords(investedAmount)})<br>
+      Estimated Maturity Amount: ₹${maturityAmount.toFixed(2)} (${convertToWords(maturityAmount)})
+    `;
+  }
+
+  function convertToWords(num) {
+    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
+
+    if (num === 0) return "zero";
+    let words = "";
+
+    function getPartInWords(number) {
+      if (number < 10) return units[number];
+      if (number < 20) return teens[number - 10];
+      if (number < 100) return tens[Math.floor(number / 10)] + " " + units[number % 10];
+      return units[Math.floor(number / 100)] + " hundred " + (number % 100 === 0 ? "" : "and " + getPartInWords(number % 100));
+    }
+
+    let scaleIndex = 0;
+    while (num > 0) {
+      let part;
+      if (scaleIndex === 0) {
+        part = num % 1000;
+        num = Math.floor(num / 1000);
+      } else {
+        part = num % 100;
+        num = Math.floor(num / 100);
+      }
+
+      if (part !== 0) {
+        words = getPartInWords(part) + " " + scales[scaleIndex] + " " + words;
+      }
+      scaleIndex++;
+    }
+    return words.trim();
   }
 </script>
 
