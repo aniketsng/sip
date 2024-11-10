@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="manifest.json">
   <title>SIP Calculator</title>
   <style>
     /* Basic Reset */
@@ -85,52 +85,98 @@
   </style>
 </head>
 <body>
-  <div class="calculator">
-    <h2>SIP Calculator</h2>
-    <div class="form-group">
-      <label for="monthlyInvestment">Monthly Investment (₹):</label>
-      <input type="number" id="monthlyInvestment" placeholder="Enter amount" required>
-    </div>
-    <div class="form-group">
-      <label for="investmentPeriod">Investment Period (years):</label>
-      <input type="number" id="investmentPeriod" placeholder="Enter years" required>
-    </div>
-    <div class="form-group">
-      <label for="expectedReturn">Expected Annual Return Rate (%):</label>
-      <input type="number" id="expectedReturn" placeholder="Enter rate" required>
-    </div>
-    <button onclick="calculateSIP()">Calculate</button>
-    <div class="result" id="result"></div>
+
+<div class="calculator">
+  <h2>SIP Calculator</h2>
+  <div class="form-group">
+    <label for="monthlyInvestment">Monthly Investment (₹):</label>
+    <input type="number" id="monthlyInvestment" placeholder="Enter amount" required>
   </div>
+  <div class="form-group">
+    <label for="investmentPeriod">Investment Period (years):</label>
+    <input type="number" id="investmentPeriod" placeholder="Enter years" required>
+  </div>
+  <div class="form-group">
+    <label for="expectedReturn">Expected Annual Return Rate (%):</label>
+    <input type="number" id="expectedReturn" placeholder="Enter rate" required>
+  </div>
+  <button onclick="calculateSIP()">Calculate</button>
+  <div class="result" id="result"></div>
+</div>
 
-  <script>
-    function calculateSIP() {
-      const monthlyInvestment = parseFloat(document.getElementById("monthlyInvestment").value);
-      const investmentPeriod = parseFloat(document.getElementById("investmentPeriod").value);
-      const expectedReturn = parseFloat(document.getElementById("expectedReturn").value) / 100;
+<script>
+  function calculateSIP() {
+    const monthlyInvestment = parseFloat(document.getElementById("monthlyInvestment").value);
+    const investmentPeriod = parseFloat(document.getElementById("investmentPeriod").value);
+    const expectedReturn = parseFloat(document.getElementById("expectedReturn").value) / 100;
 
-      const months = investmentPeriod * 12;
-      const monthlyRate = expectedReturn / 12;
+    const months = investmentPeriod * 12;
+    const monthlyRate = expectedReturn / 12;
 
-      // Total Invested Amount
-      const investedAmount = monthlyInvestment * months;
+    // Total Invested Amount
+    const investedAmount = monthlyInvestment * months;
 
-      // Maturity Amount Calculation using Future Value of an Annuity formula
-      const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+    // Maturity Amount Calculation using Future Value of an Annuity formula
+    const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
 
-      document.getElementById("result").innerHTML = `
-        Total Invested Amount: ₹${investedAmount.toFixed(2)}<br>
-        Estimated Maturity Amount: ₹${maturityAmount.toFixed(2)}
-      `;
+    document.getElementById("result").innerHTML = `
+      Total Invested Amount: ₹${investedAmount.toFixed(2)} (${convertToWords(investedAmount)})<br>
+      Estimated Maturity Amount: ₹${maturityAmount.toFixed(2)} (${convertToWords(maturityAmount)})
+    `;
+  }
+
+  function convertToWords(amount) {
+    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
+
+    if (amount === 0) return "zero";
+
+    // Split amount into rupees and paise
+    const [rupees, paise] = amount.toFixed(2).split('.').map(Number);
+    let words = convertPartToWords(rupees) + " rupees";
+
+    if (paise > 0) {
+      words += " and " + convertPartToWords(paise) + " paisa";
+    }
+    return words.trim();
+  }
+
+  function convertPartToWords(num) {
+    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
+
+    let words = "";
+    let scaleIndex = 0;
+
+    function getPartInWords(number) {
+      if (number < 10) return units[number];
+      if (number < 20) return teens[number - 10];
+      if (number < 100) return tens[Math.floor(number / 10)] + " " + units[number % 10];
+      return units[Math.floor(number / 100)] + " hundred " + (number % 100 === 0 ? "" : "and " + getPartInWords(number % 100));
     }
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => console.log('Service Worker registered', reg))
-          .catch(err => console.error('Service Worker registration failed', err));
-      });
+    while (num > 0) {
+      let part;
+      if (scaleIndex === 0) {
+        part = num % 1000;
+        num = Math.floor(num / 1000);
+      } else {
+        part = num % 100;
+        num = Math.floor(num / 100);
+      }
+
+      if (part !== 0) {
+        words = getPartInWords(part) + " " + scales[scaleIndex] + " " + words;
+      }
+      scaleIndex++;
     }
-  </script>
+    return words.trim();
+  }
+</script>
+
 </body>
 </html>
