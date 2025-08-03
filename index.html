@@ -1,182 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-  <title>SIP Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIP + Lump Sum Calculator</title>
   <style>
-    /* Basic Reset */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
+    :root {
+      --primary: #007bff;
+      --light-bg: #f4f6f8;
+      --white: #fff;
+      --gray: #555;
+      --yellow-bg: #fff8e1;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     }
-    /* Body and Calculator Container */
+
     body {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-color: #f0f2f5;
-      color: #333;
-    }
-    .calculator {
-      width: 100%;
-      max-width: 400px;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--light-bg);
+      margin: 0;
       padding: 20px;
-      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--gray);
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--white);
+      padding: 25px 30px;
       border-radius: 12px;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow);
     }
-    .calculator h2 {
-      text-align: center;
-      color: #007bff;
-      margin-bottom: 20px;
-    }
-    /* Form Styles */
-    .form-group {
+
+    h2, h3 {
+      color: var(--primary);
       margin-bottom: 15px;
     }
-    .form-group label {
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
       display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
     }
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    .form-group input:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
-    /* Button Styles */
-    button {
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: none;
+      -webkit-appearance: none;
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
-      color: #fff;
+      margin-top: 6px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    button {
+      margin-top: 25px;
+      padding: 12px;
       font-size: 16px;
       font-weight: bold;
+      color: #fff;
+      background-color: var(--primary);
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background 0.3s;
     }
+
     button:hover {
       background-color: #0056b3;
     }
-    /* Result Styles */
+
     .result {
+      font-size: 17px;
       margin-top: 20px;
+      line-height: 1.6;
+      background-color: #f1f9ff;
       padding: 15px;
-      background-color: #f8f9fa;
-      border-radius: 6px;
-      font-size: 16px;
-      font-weight: bold;
-      color: #333;
+      border-radius: 8px;
+      border-left: 5px solid var(--primary);
+    }
+
+    .advertisement {
+      background-color: var(--yellow-bg);
+      border: 1px solid #ffe082;
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .advertisement p {
+      margin: 10px 0;
+      font-weight: 500;
+    }
+
+    @media (max-width: 540px) {
+      .card, .advertisement {
+        padding: 20px;
+      }
+      input, button {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
 <body>
 
-<div class="calculator">
-  <h2>SIP Calculator</h2>
-  <div class="form-group">
-    <label for="monthlyInvestment">Monthly Investment (₹):</label>
-    <input type="number" id="monthlyInvestment" placeholder="Enter amount" required>
+  <div class="container">
+    <div class="card">
+      <h2>SIP + Lump Sum Calculator</h2>
+
+      <label for="monthlyInvestment">Monthly SIP (₹):</label>
+      <input type="number" id="monthlyInvestment" placeholder="e.g., 10000" />
+
+      <label for="lumpSumInvestment">Lump Sum (₹):</label>
+      <input type="number" id="lumpSumInvestment" placeholder="e.g., 500000" />
+
+      <label for="investmentPeriod">Investment Period (Years):</label>
+      <input type="number" id="investmentPeriod" placeholder="e.g., 10" />
+
+      <label for="expectedReturn">Expected Annual Return (%):</label>
+      <input type="number" id="expectedReturn" placeholder="e.g., 12" />
+
+      <button onclick="calculate()">Calculate</button>
+
+      <div class="result" id="result"></div>
+    </div>
+
+    <div class="advertisement" id="advertisement">
+      <h3>Advertisements</h3>
+      <p>Loading...</p>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="investmentPeriod">Investment Period (years):</label>
-    <input type="number" id="investmentPeriod" placeholder="Enter years" required>
-  </div>
-  <div class="form-group">
-    <label for="expectedReturn">Expected Annual Return Rate (%):</label>
-    <input type="number" id="expectedReturn" placeholder="Enter rate" required>
-  </div>
-  <button onclick="calculateSIP()">Calculate</button>
-  <div class="result" id="result"></div>
-</div>
 
-<script>
-  function calculateSIP() {
-    const monthlyInvestment = parseFloat(document.getElementById("monthlyInvestment").value);
-    const investmentPeriod = parseFloat(document.getElementById("investmentPeriod").value);
-    const expectedReturn = parseFloat(document.getElementById("expectedReturn").value) / 100;
+  <script>
+    function numberToIndianWords(num) {
+      const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+        'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
+        'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+      const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+      const units = ['', 'thousand', 'lakh', 'crore'];
 
-    const months = investmentPeriod * 12;
-    const monthlyRate = expectedReturn / 12;
+      if (num === 0) return 'zero';
 
-    // Total Invested Amount
-    const investedAmount = monthlyInvestment * months;
-
-    // Maturity Amount Calculation using Future Value of an Annuity formula
-    const maturityAmount = monthlyInvestment * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-
-    document.getElementById("result").innerHTML = `
-      Total Invested Amount: ₹${investedAmount.toFixed(2)} (${convertToWords(investedAmount)})<br>
-      Estimated Maturity Amount: ₹${maturityAmount.toFixed(2)} (${convertToWords(maturityAmount)})
-    `;
-  }
-
-  function convertToWords(amount) {
-    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
-
-    if (amount === 0) return "zero";
-
-    // Split amount into rupees and paise
-    const [rupees, paise] = amount.toFixed(2).split('.').map(Number);
-    let words = convertPartToWords(rupees) + " rupees";
-
-    if (paise > 0) {
-      words += " and " + convertPartToWords(paise) + " paisa";
-    }
-    return words.trim();
-  }
-
-  function convertPartToWords(num) {
-    const units = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
-    const teens = ["", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
-    const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
-    const scales = ["", "thousand", "lakh", "crore", "arab", "kharab", "nil", "padma", "shankh"];
-
-    let words = "";
-    let scaleIndex = 0;
-
-    function getPartInWords(number) {
-      if (number < 10) return units[number];
-      if (number < 20) return teens[number - 10];
-      if (number < 100) return tens[Math.floor(number / 10)] + " " + units[number % 10];
-      return units[Math.floor(number / 100)] + " hundred " + (number % 100 === 0 ? "" : "and " + getPartInWords(number % 100));
-    }
-
-    while (num > 0) {
-      let part;
-      if (scaleIndex === 0) {
-        part = num % 1000;
-        num = Math.floor(num / 1000);
-      } else {
-        part = num % 100;
-        num = Math.floor(num / 100);
+      function convert(num) {
+        if (num < 20) return a[num];
+        if (num < 100) return b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
+        if (num < 1000) return a[Math.floor(num / 100)] + ' hundred' + (num % 100 !== 0 ? ' and ' + convert(num % 100) : '');
+        return '';
       }
 
-      if (part !== 0) {
-        words = getPartInWords(part) + " " + scales[scaleIndex] + " " + words;
-      }
-      scaleIndex++;
-    }
-    return words.trim();
-  }
-</script>
+      let str = '';
+      const parts = [];
+      parts.push(num % 1000); num = Math.floor(num / 1000); // ones
+      parts.push(num % 100); num = Math.floor(num / 100);   // thousands
+      parts.push(num % 100); num = Math.floor(num / 100);   // lakhs
+      parts.push(num);                                      // crores
 
+      for (let i = parts.length - 1; i >= 0; i--) {
+        if (parts[i] > 0) {
+          str += convert(parts[i]) + ' ' + units[i] + ' ';
+        }
+      }
+
+      return str.trim();
+    }
+
+    function calculate() {
+      const sip = parseFloat(document.getElementById("monthlyInvestment").value) || 0;
+      const lumpSum = parseFloat(document.getElementById("lumpSumInvestment").value) || 0;
+      const years = parseFloat(document.getElementById("investmentPeriod").value);
+      const annualRate = parseFloat(document.getElementById("expectedReturn").value);
+
+      if (!years || !annualRate) {
+        document.getElementById("result").innerHTML = "Please fill all required fields.";
+        return;
+      }
+
+      const months = years * 12;
+      const monthlyRate = annualRate / 12 / 100;
+
+      // SIP
+      const sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+      const sipInvested = sip * months;
+
+      // Lump sum
+      const lumpMaturity = lumpSum * Math.pow(1 + monthlyRate, months);
+
+      const totalInvested = sipInvested + lumpSum;
+      const totalMaturity = sipMaturity + lumpMaturity;
+
+      document.getElementById("result").innerHTML = `
+        <strong>Total Invested:</strong> ₹${totalInvested.toFixed(2)} (${numberToIndianWords(Math.round(totalInvested))})<br>
+        <strong>Maturity Amount:</strong> ₹${totalMaturity.toFixed(2)} (${numberToIndianWords(Math.round(totalMaturity))})
+      `;
+    }
+
+    async function fetchAdvertisements() {
+      try {
+        const res = await fetch('https://amzn.to/4l6RnQV');
+        const data = await res.json();
+        const adDiv = document.getElementById("advertisement");
+        adDiv.innerHTML = `<h3>Advertisements</h3>`;
+        data.products.forEach(ad => {
+          adDiv.innerHTML += `<p>🛒 <strong>${ad.title}</strong> – ₹${ad.price}</p>`;
+        });
+      } catch (e) {
+        document.getElementById("advertisement").innerHTML = "<p>Could not load ads.</p>";
+      }
+    }
+
+    window.onload = fetchAdvertisements;
+  </script>
 </body>
 </html>
