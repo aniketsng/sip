@@ -5,237 +5,194 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SIP + Lump Sum Calculator</title>
   <style>
-    :root {
-      --primary: #007bff;
-      --light-bg: #f4f6f8;
-      --white: #fff;
-      --gray: #555;
-      --yellow-bg: #fff8e1;
-      --shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
-
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: var(--light-bg);
+      background-color: #f3f6fb;
       margin: 0;
       padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: var(--gray);
     }
 
     .container {
-      max-width: 500px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
+      max-width: 450px;
+      margin: 0 auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
-    .card {
-      background: var(--white);
-      padding: 25px 30px;
-      border-radius: 12px;
-      box-shadow: var(--shadow);
-    }
-
-    h2, h3 {
-      color: var(--primary);
-      margin-bottom: 15px;
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 24px;
     }
 
     label {
       font-weight: 600;
-      margin-top: 15px;
-      display: block;
     }
 
     input[type="number"] {
       -moz-appearance: textfield;
-      appearance: none;
       -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      padding: 12px;
+      padding: 12px 14px;
       margin-top: 6px;
+      margin-bottom: 16px;
       font-size: 16px;
       border: 1px solid #ccc;
       border-radius: 8px;
-      background-color: #fff;
-      transition: border-color 0.2s;
-      box-sizing: border-box;
-    }
-
-    input[type="number"]:focus {
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+      transition: border 0.2s ease;
     }
 
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button {
       -webkit-appearance: none;
       margin: 0;
     }
 
+    input[type="number"]:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+    }
+
     button {
-      margin-top: 25px;
+      width: 100%;
+      background-color: #007bff;
+      color: white;
       padding: 12px;
       font-size: 16px;
       font-weight: bold;
-      color: #fff;
-      background-color: var(--primary);
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      transition: background 0.3s;
+      margin-bottom: 20px;
     }
 
     button:hover {
       background-color: #0056b3;
     }
 
-    .result {
-      font-size: 17px;
-      margin-top: 20px;
-      line-height: 1.6;
-      background-color: #f1f9ff;
-      padding: 15px;
+    .output {
+      background: #f0f8ff;
+      padding: 16px;
       border-radius: 8px;
-      border-left: 5px solid var(--primary);
+      font-size: 16px;
     }
 
     .advertisement {
-      background-color: var(--yellow-bg);
-      border: 1px solid #ffe082;
-      border-radius: 8px;
+      margin-top: 30px;
       padding: 20px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 10px;
+      text-align: center;
     }
 
-    .advertisement p {
-      margin: 10px 0;
-      font-weight: 500;
+    .advertisement img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin-bottom: 10px;
     }
 
-    @media (max-width: 540px) {
-      .card, .advertisement {
-        padding: 20px;
-      }
-      input, button {
-        font-size: 15px;
+    @media (max-width: 500px) {
+      .container {
+        margin: 10px;
       }
     }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <div class="card">
-      <h2>SIP + Lump Sum Calculator</h2>
+    <h2>SIP + Lump Sum Calculator</h2>
 
-      <label for="monthlyInvestment">Monthly SIP (₹):</label>
-      <input type="number" id="monthlyInvestment" placeholder="e.g., 10000" />
+    <label for="sipAmount">Monthly SIP Investment (₹)</label>
+    <input type="number" id="sipAmount" placeholder="Enter monthly amount" />
 
-      <label for="lumpSumInvestment">Lump Sum (₹):</label>
-      <input type="number" id="lumpSumInvestment" placeholder="e.g., 500000" />
+    <label for="lumpSumAmount">Lump Sum Investment (₹)</label>
+    <input type="number" id="lumpSumAmount" placeholder="Enter lump sum amount" />
 
-      <label for="investmentPeriod">Investment Period (Years):</label>
-      <input type="number" id="investmentPeriod" placeholder="e.g., 10" />
+    <label for="years">Investment Period (Years)</label>
+    <input type="number" id="years" placeholder="Enter years" />
 
-      <label for="expectedReturn">Expected Annual Return (%):</label>
-      <input type="number" id="expectedReturn" placeholder="e.g., 12" />
+    <label for="rate">Expected Annual Return (%)</label>
+    <input type="number" id="rate" placeholder="Enter % return" />
 
-      <button onclick="calculate()">Calculate</button>
+    <button onclick="calculateSIP()">Calculate</button>
 
-      <div class="result" id="result"></div>
-    </div>
+    <div class="output" id="result"></div>
 
     <div class="advertisement" id="advertisement">
-  <h3>Sponsored</h3>
-  <a href="https://amzn.to/4l6RnQV" target="_blank" style="text-decoration: none; color: inherit;">
-    <img src="https://via.placeholder.com/400x200.png?text=Buy+Now+on+Amazon" alt="Amazon Ad" style="width:100%; border-radius: 8px; margin-bottom: 10px;">
-    <p><strong>Check this recommended product on Amazon!</strong></p>
-  </a>
-</div>
+      <h3>Sponsored</h3>
+      <a href="https://amzn.to/4l6RnQV" target="_blank" style="text-decoration: none; color: inherit;">
+        <img src="https://via.placeholder.com/400x200.png?text=Buy+Now+on+Amazon" alt="Amazon Ad">
+        <p><strong>Check this recommended product on Amazon!</strong></p>
+      </a>
+    </div>
+  </div>
 
   <script>
-    function numberToIndianWords(num) {
-      const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
-        'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
-        'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-      const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-      const units = ['', 'thousand', 'lakh', 'crore'];
-
+    function toIndianWords(num) {
       if (num === 0) return 'zero';
 
-      function convert(num) {
-        if (num < 20) return a[num];
-        if (num < 100) return b[Math.floor(num / 10)] + (num % 10 !== 0 ? ' ' + a[num % 10] : '');
-        if (num < 1000) return a[Math.floor(num / 100)] + ' hundred' + (num % 100 !== 0 ? ' and ' + convert(num % 100) : '');
+      const a = [
+        '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven',
+        'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen',
+        'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+      ];
+      const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+
+      const n2w = (n) => {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 ? '-' + a[n % 10] : '');
+        if (n < 1000) return a[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' and ' + n2w(n % 100) : '');
         return '';
-      }
+      };
 
-      let str = '';
-      const parts = [];
-      parts.push(num % 1000); num = Math.floor(num / 1000); // ones
-      parts.push(num % 100); num = Math.floor(num / 100);   // thousands
-      parts.push(num % 100); num = Math.floor(num / 100);   // lakhs
-      parts.push(num);                                      // crores
+      let words = '';
+      const crore = Math.floor(num / 10000000);
+      num %= 10000000;
+      const lakh = Math.floor(num / 100000);
+      num %= 100000;
+      const thousand = Math.floor(num / 1000);
+      num %= 1000;
+      const hundred = Math.floor(num / 100);
+      const rest = num % 100;
 
-      for (let i = parts.length - 1; i >= 0; i--) {
-        if (parts[i] > 0) {
-          str += convert(parts[i]) + ' ' + units[i] + ' ';
-        }
-      }
-
-      return str.trim();
+      if (crore) words += n2w(crore) + ' crore ';
+      if (lakh) words += n2w(lakh) + ' lakh ';
+      if (thousand) words += n2w(thousand) + ' thousand ';
+      if (hundred) words += a[hundred] + ' hundred ';
+      if (rest) words += 'and ' + n2w(rest);
+      return words.trim();
     }
 
-    function calculate() {
-      const sip = parseFloat(document.getElementById("monthlyInvestment").value) || 0;
-      const lumpSum = parseFloat(document.getElementById("lumpSumInvestment").value) || 0;
-      const years = parseFloat(document.getElementById("investmentPeriod").value);
-      const annualRate = parseFloat(document.getElementById("expectedReturn").value);
-
-      if (!years || !annualRate) {
-        document.getElementById("result").innerHTML = "Please fill all required fields.";
-        return;
-      }
+    function calculateSIP() {
+      const sip = parseFloat(document.getElementById('sipAmount').value) || 0;
+      const lump = parseFloat(document.getElementById('lumpSumAmount').value) || 0;
+      const years = parseFloat(document.getElementById('years').value) || 0;
+      const rate = parseFloat(document.getElementById('rate').value) || 0;
 
       const months = years * 12;
-      const monthlyRate = annualRate / 12 / 100;
+      const monthlyRate = rate / 12 / 100;
 
-      // SIP
-      const sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-      const sipInvested = sip * months;
+      const sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate) / monthlyRate);
+      const lumpMaturity = lump * Math.pow(1 + monthlyRate, months);
 
-      // Lump sum
-      const lumpMaturity = lumpSum * Math.pow(1 + monthlyRate, months);
-
-      const totalInvested = sipInvested + lumpSum;
       const totalMaturity = sipMaturity + lumpMaturity;
+      const totalInvested = sip * months + lump;
 
-      document.getElementById("result").innerHTML = `
-        <strong>Total Invested:</strong> ₹${totalInvested.toFixed(2)} (${numberToIndianWords(Math.round(totalInvested))})<br>
-        <strong>Maturity Amount:</strong> ₹${totalMaturity.toFixed(2)} (${numberToIndianWords(Math.round(totalMaturity))})
+      const result = `
+        <strong>Total Invested Amount:</strong> ₹${totalInvested.toFixed(2)}<br>
+        (${toIndianWords(Math.round(totalInvested))})<br><br>
+        <strong>Estimated Maturity Amount:</strong> ₹${totalMaturity.toFixed(2)}<br>
+        (${toIndianWords(Math.round(totalMaturity))})
       `;
-    }
 
-    async function fetchAdvertisements() {
-      try {
-        const res = await fetch('https://amzn.to/4l6RnQV');
-        const data = await res.json();
-        const adDiv = document.getElementById("advertisement");
-        adDiv.innerHTML = `<h3>Advertisements</h3>`;
-        data.products.forEach(ad => {
-          adDiv.innerHTML += `<p>🛒 <strong>${ad.title}</strong> – ₹${ad.price}</p>`;
-        });
-      } catch (e) {
-        document.getElementById("advertisement").innerHTML = "<p>Could not load ads.</p>";
-      }
+      document.getElementById('result').innerHTML = result;
     }
-
-    window.onload = fetchAdvertisements;
   </script>
 </body>
 </html>
