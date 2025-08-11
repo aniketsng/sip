@@ -1,169 +1,245 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>SIP + Lump Sum Calculator</title>
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f6f8;
-        margin: 0;
-        padding: 0;
-    }
-    .container {
-        max-width: 450px;
-        margin: 30px auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    h2 {
-        text-align: center;
-        color: #007bff;
-    }
-    label {
-        font-weight: bold;
-        display: block;
-        margin-top: 12px;
-        margin-bottom: 5px;
-    }
-    input {
-        width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        box-sizing: border-box;
-        outline: none;
-        -moz-appearance: textfield; /* Firefox */
-    }
-    input::-webkit-inner-spin-button,
-    input::-webkit-outer-spin-button {
-        -webkit-appearance: none; /* Chrome, Safari */
-        margin: 0;
-    }
-    button {
-        width: 100%;
-        padding: 12px;
-        background-color: #007bff;
-        border: none;
-        color: white;
-        font-size: 16px;
-        border-radius: 8px;
-        margin-top: 15px;
-        cursor: pointer;
-    }
-    button:hover {
-        background-color: #0056b3;
-    }
-    .result {
-        background: #f0f4f8;
-        padding: 15px;
-        border-radius: 8px;
-        margin-top: 20px;
-    }
-    .ad-section {
-        margin-top: 20px;
-        padding: 15px;
-        background: #fff9e6;
-        border: 1px solid #ffd966;
-        border-radius: 8px;
-        text-align: center;
-    }
-    .ad-section img {
-        max-width: 100%;
-        border-radius: 6px;
-    }
-    .ad-section a {
-        text-decoration: none;
-        color: #007bff;
-        font-weight: bold;
-        display: block;
-        margin-top: 8px;
-    }
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 450px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    perspective: 1000px;
+  }
+  h2 {
+    text-align: center;
+    color: #007bff;
+  }
+  label {
+    font-weight: bold;
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+  }
+  input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+    outline: none;
+    -moz-appearance: textfield;
+  }
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  button {
+    width: 100%;
+    padding: 12px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+    margin-top: 15px;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  .result {
+    background: #f0f4f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+  }
+
+  /* Ad Slider Styles */
+  .ad-slider-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 20px 0 0 0;
+    overflow: hidden;
+    background: #fff9e6;
+    border: 1px solid #ffd966;
+    border-radius: 8px;
+  }
+  .ad-slider {
+    display: flex;
+    transition: transform 0.6s ease-in-out;
+  }
+  /* Option 1: remove padding so images fill width */
+  .ad-slide {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 0; /* no padding */
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+  }
+  .ad-slide:hover {
+    transform: rotateY(10deg) scale(1.05);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+    z-index: 10;
+    position: relative;
+  }
+  .ad-slide img {
+    width: 100%;          /* fill entire slide width */
+    height: auto;         /* maintain aspect ratio */
+    max-height: 270px;    /* cap height */
+    object-fit: contain;  /* no cropping */
+    border-radius: 9px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+    display: block;
+    margin: 0 auto;
+    background-color: #fff;
+  }
+  .ad-title {
+    display: block;
+    margin-top: 6px;
+    font-weight: bold;
+    color: #007bff;
+    text-decoration: none;
+  }
+  .ad-title:hover {
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>SIP + Lump Sum Calculator</h2>
+  <h2>SIP + Lump Sum Calculator</h2>
 
-    <label>Monthly SIP Investment (₹)</label>
-    <input type="number" id="sip" value="0">
+  <label>Monthly SIP Investment (₹)</label>
+  <input type="number" id="sip" value="0" />
 
-    <label>Lump Sum Investment (₹)</label>
-    <input type="number" id="lumpsum" value="0">
+  <label>Lump Sum Investment (₹)</label>
+  <input type="number" id="lumpsum" value="0" />
 
-    <label>Investment Period (Years)</label>
-    <input type="number" id="years" value="10">
+  <label>Investment Period (Years)</label>
+  <input type="number" id="years" value="10" />
 
-    <label>Expected Annual Return (%)</label>
-    <input type="number" id="rate" value="12">
+  <label>Expected Annual Return (%)</label>
+  <input type="number" id="rate" value="12" />
 
-    <button onclick="calculate()">Calculate</button>
+  <button onclick="calculate()">Calculate</button>
 
-    <div id="result" class="result"></div>
+  <div id="result" class="result"></div>
 
-    <!-- Amazon Ad -->
-    <div id="ads" style="text-align:center; margin-top:20px;">
-    <a href="https://amzn.to/4mc32iF" target="_blank">
-        <img src="https://m.media-amazon.com/images/I/51KrfhlRyxL._SX342_SY445_.jpg" 
-             alt="Amazon Product" 
-             style="max-width:100%; height:auto; border-radius:8px; box-shadow:0px 2px 8px rgba(0,0,0,0.2);">
-    </a>
-    <p style="margin-top:8px;">
-        <a href="https://amzn.to/4mc32iF" target="_blank" style="color:#0066c0; font-weight:bold; text-decoration:none;">
-            Buy on Amazon
+  <!-- Amazon Ad Slider -->
+  <div class="ad-slider-container">
+    <div class="ad-slider" id="adSlider">
+      <div class="ad-slide">
+        <a href="https://amzn.to/3H7ftNz" target="_blank">
+          <img src="https://m.media-amazon.com/images/I/71gn83R0DPL._SL1500_.jpg" alt="Amazon Product 1" />
         </a>
-    </p>
-</div>
-
-
+        <a href="https://amzn.to/3H7ftNz" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+      <div class="ad-slide">
+        <a href="https://amzn.to/4lxIKPC" target="_blank">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGzmyHsA8o7AFqd9AmNoByEQNA0wLmS4zCqw&s" alt="Amazon Product 2" />
+        </a>
+        <a href="https://amzn.to/4lxIKPC" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+      <div class="ad-slide">
+        <a href="https://amzn.to/4fw2kKx" target="_blank">
+          <img src="https://m.media-amazon.com/images/I/71o8Q5XJS5L._SX679_.jpg" alt="Amazon Product 3" />
+        </a>
+        <a href="https://amzn.to/4fw2kKx" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+      <div class="ad-slide">
+        <a href="https://amzn.to/47m4lqA" target="_blank">
+          <img src="https://m.media-amazon.com/images/I/51aoXk4rzXL._SL1060_.jpg" alt="Amazon Product 4" />
+        </a>
+        <a href="https://amzn.to/47m4lqA" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+      <div class="ad-slide">
+        <a href="https://amzn.to/4lkvVYA" target="_blank">
+          <img src="https://m.media-amazon.com/images/I/71dxcllI6RL._SL1500_.jpg" alt="Amazon Product 5" />
+        </a>
+        <a href="https://amzn.to/4lkvVYA" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+      <div class="ad-slide">
+        <a href="https://amzn.to/3HrImE6" target="_blank">
+          <img src="https://m.media-amazon.com/images/I/91G-YiPPeYL._SL1500_.jpg" alt="Amazon Product 6" />
+        </a>
+        <a href="https://amzn.to/3HrImE6" target="_blank" class="ad-title">Buy Now</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-// Convert number to Indian English words
+// Number to Words
 function numberToWords(num) {
-    const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-               'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-    const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-
-    if ((num = num.toString()).length > 9) return 'overflow';
-    let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-    if (!n) return; 
-    let str = '';
-    str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' crore ' : '';
-    str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' lakh ' : '';
-    str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' thousand ' : '';
-    str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' hundred ' : '';
-    str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-    return str.trim();
+  const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+             'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  if ((num = num.toString()).length > 9) return 'overflow';
+  let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+  if (!n) return;
+  let str = '';
+  str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' crore ' : '';
+  str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' lakh ' : '';
+  str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' thousand ' : '';
+  str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' hundred ' : '';
+  str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+  return str.trim();
 }
 
+// Calculator
 function calculate() {
-    let sip = parseFloat(document.getElementById("sip").value) || 0;
-    let lumpsum = parseFloat(document.getElementById("lumpsum").value) || 0;
-    let years = parseFloat(document.getElementById("years").value) || 0;
-    let rate = parseFloat(document.getElementById("rate").value) || 0;
+  let sip = parseFloat(document.getElementById("sip").value) || 0;
+  let lumpsum = parseFloat(document.getElementById("lumpsum").value) || 0;
+  let years = parseFloat(document.getElementById("years").value) || 0;
+  let rate = parseFloat(document.getElementById("rate").value) || 0;
 
-    let months = years * 12;
-    let monthlyRate = rate / 12 / 100;
+  let months = years * 12;
+  let monthlyRate = rate / 12 / 100;
 
-    let sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-    let lumpsumMaturity = lumpsum * Math.pow(1 + monthlyRate, months);
+  let sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+  let lumpsumMaturity = lumpsum * Math.pow(1 + monthlyRate, months);
 
-    let totalInvested = (sip * months) + lumpsum;
-    let maturityAmount = sipMaturity + lumpsumMaturity;
+  let totalInvested = (sip * months) + lumpsum;
+  let maturityAmount = sipMaturity + lumpsumMaturity;
 
-    document.getElementById("result").innerHTML = `
-        <strong>Total Invested Amount:</strong> ₹${totalInvested.toFixed(2)}<br>
-        (${numberToWords(Math.floor(totalInvested))})<br><br>
-        <strong>Estimated Maturity Amount:</strong> ₹${maturityAmount.toFixed(2)}<br>
-        (${numberToWords(Math.floor(maturityAmount))})
-    `;
+  document.getElementById("result").innerHTML = `
+    <strong>Total Invested Amount:</strong> ₹${totalInvested.toFixed(2)}<br>
+    (${numberToWords(Math.floor(totalInvested))})<br><br>
+    <strong>Estimated Maturity Amount:</strong> ₹${maturityAmount.toFixed(2)}<br>
+    (${numberToWords(Math.floor(maturityAmount))})
+  `;
 }
+
+// Auto slider
+let currentAdIndex = 0;
+const totalAds = document.querySelectorAll("#adSlider .ad-slide").length;
+
+function showAd(index) {
+  if (index >= totalAds) currentAdIndex = 0;
+  else if (index < 0) currentAdIndex = totalAds - 1;
+  else currentAdIndex = index;
+  document.getElementById("adSlider").style.transform = `translateX(-${currentAdIndex * 100}%)`;
+}
+
+setInterval(() => {
+  showAd(currentAdIndex + 1);
+}, 5000);
+
+showAd(0);
 </script>
 
 </body>
