@@ -1,246 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>SIP + Lump Sum Calculator</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 450px;
-    margin: 30px auto;
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    perspective: 1000px;
-  }
-  h2 {
-    text-align: center;
-    color: #007bff;
-  }
-  label {
-    font-weight: bold;
-    display: block;
-    margin-top: 12px;
-    margin-bottom: 5px;
-  }
-  input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    outline: none;
-    -moz-appearance: textfield;
-  }
-  input::-webkit-inner-spin-button,
-  input::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    border: none;
-    color: white;
-    font-size: 16px;
-    border-radius: 8px;
-    margin-top: 15px;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #0056b3;
-  }
-  .result {
-    background: #f0f4f8;
-    padding: 15px;
-    border-radius: 8px;
-    margin-top: 20px;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SIP + Lump Sum Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      display: flex;
+      gap: 32px;
+      align-items: flex-start;
+      margin: 30px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .left-panel {
+      flex: 1 1 340px;
+      min-width: 300px;
+      max-width: 400px;
+    }
+    .right-panel {
+      flex: 1 1 320px;
+      min-width: 260px;
+      max-width: 350px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin: 14px 0 6px 0;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      margin-bottom: 2px;
+    }
+    input::-webkit-inner-spin-button,
+    input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #007bff;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      margin-top: 18px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    .result {
+      background: #f0f4f8;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 22px;
+      font-size: 15px;
+      color: #222;
+    }
+    .ad-slider-container {
+      width: 100%;
+      margin-top: 20px;
+      overflow: hidden;
+      background: #fff9e6;
+      border: 1px solid #ffd966;
+      border-radius: 8px;
+    }
+    .ad-slider {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(.4,1,.4,1);
+    }
+    .ad-slide {
+      flex: 0 0 100%;
+      text-align: center;
+      padding: 0;
+      transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .ad-slide:hover {
+      transform: scale(1.04);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.13);
+      z-index: 10;
+      position: relative;
+    }
+    .ad-slide img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 9px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.13);
+      background: #fff;
+      margin: 0 auto;
+      display: block;
+    }
+    .ad-title {
+      display: block;
+      font-weight: bold;
+      margin: 10px 0 8px 0;
+      color: #d35400;
+      text-decoration: none;
+      font-size: 17px;
+    }
+    /* Pie chart legend and labels */
+    .pie-legend {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      margin-top: -10px;
+    }
+    .pie-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .pie-legend-color {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      box-shadow: 0 1px 4px #007bff33;
+    }
+    .pie-legend-color.gain { background: #28a745; box-shadow: 0 1px 4px #28a74533; }
+    .pie-legend-color.invested { background: #007bff; }
+    .amount-labels {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 16px;
+    }
+    .amount-label {
+      text-align: center;
+    }
+    .amount-label .invested { color: #007bff; font-weight: bold; font-size: 16px; }
+    .amount-label .gain { color: #28a745; font-weight: bold; font-size: 16px; }
+    .amount-label .desc { font-size: 13px; color: #555; }
+    #adError {
+      color: red;
+      text-align: center;
+      margin: 30px 0 10px 0;
+      font-weight: bold;
+    }, rounded endir      justify  text-align: cen
+      // Removed invested/gain labels from inside the chart
+      // Show and draw chart
+      const chart = document.getElementById('pieChart');
+      chart.style.display = 'block';
+      // Update invested and gain values outside the chart
 
-  /* Ad Slider Styles */
-  .ad-slider-container {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    margin: 20px 0 0 0;
-    overflow: hidden;
-    background: #fff9e6;
-    border: 1px solid #ffd966;
-    border-radius: 8px;
-  }
-  .ad-slider {
-    display: flex;
-    transition: transform 0.6s ease-in-out;
-  }
-  /* Option 1: remove padding so images fill width */
-  .ad-slide {
-    flex: 0 0 100%;
-    box-sizing: border-box;
-    text-align: center;
-    padding: 0; /* no padding */
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-  }
-  .ad-slide:hover {
-    transform: rotateY(10deg) scale(1.05);
-    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
-    z-index: 10;
-    position: relative;
-  }
-  .ad-slide img {
-    width: 100%;          /* fill entire slide width */
-    height: auto;         /* maintain aspect ratio */
-    max-height: 270px;    /* cap height */
-    object-fit: contain;  /* no cropping */
-    border-radius: 9px;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
-    display: block;
-    margin: 0 auto;
-    background-color: #fff;
-  }
-  .ad-title {
-    display: block;
-    margin-top: 6px;
-    font-weight: bold;
-    color: #007bff;
-    text-decoration: none;
-  }
-  .ad-title:hover {
-    text-decoration: underline;
-  }
-</style>
+  </style>
 </head>
 <body>
-
-<div class="container">
-  <h2>SIP + Lump Sum Calculator</h2>
-
-  <label>Monthly SIP Investment (₹)</label>
-  <input type="number" id="sip" value="0" />
-
-  <label>Lump Sum Investment (₹)</label>
-  <input type="number" id="lumpsum" value="0" />
-
-  <label>Investment Period (Years)</label>
-  <input type="number" id="years" value="10" />
-
-  <label>Expected Annual Return (%)</label>
-  <input type="number" id="rate" value="12" />
-
-  <button onclick="calculate()">Calculate</button>
-
-  <div id="result" class="result"></div>
-
-  <!-- Amazon Ad Slider -->
-  <div class="ad-slider-container">
-    <div class="ad-slider" id="adSlider">
-      <div class="ad-slide">
-        <a href="https://amzn.to/3H7ftNz" target="_blank">
-          <img src="https://m.media-amazon.com/images/I/71gn83R0DPL._SL1500_.jpg" alt="Amazon Product 1" />
-        </a>
-        <a href="https://amzn.to/3H7ftNz" target="_blank" class="ad-title">Buy Now</a>
+  <div class="container">
+    <div class="left-panel">
+      <h2>SIP + Lump Sum Calculator</h2>
+      <label for="sip">Monthly SIP Investment (₹)</label>
+      <input type="number" id="sip" value="0" />
+      <label for="lumpsum">Lump Sum Investment (₹)</label>
+      <input type="number" id="lumpsum" value="0" />
+      <label for="years">Investment Period (Years)</label>
+      <input type="number" id="years" value="10" />
+      <label for="rate">Expected Annual Return (%)</label>
+      <input type="number" id="rate" value="12" />
+      <button onclick="calculate()">Calculate</button>
+      <script>
+        // Persist input values using localStorage
+        function persistInputs() {
+          ["sip", "lumpsum", "years", "rate"].forEach(function(id) {
+            var el = document.getElementById(id);
+            el.value = localStorage.getItem("sipcalc_" + id) || el.value;
+            el.addEventListener("input", function() {
+              localStorage.setItem("sipcalc_" + id, el.value);
+            });
+          });
+        }
+        document.addEventListener("DOMContentLoaded", persistInputs);
+      </script>
+      <div id="result" class="result"></div>
+    </div>
+    <div class="right-panel">
+      <div style="background:linear-gradient(135deg,#e3f0ff 0%,#f8fff8 100%);border-radius:18px;box-shadow:0 2px 12px rgba(0,123,255,0.08);padding:22px 10px 18px 10px;width:100%;display:flex;flex-direction:column;align-items:center;">
+        <canvas id="pieChart" width="260" height="260" style="margin-bottom:18px;display:block;"></canvas>
+        <div class="pie-legend">
+          <div class="pie-legend-item">
+            <span class="pie-legend-color invested"></span>
+            <span style="font-size:15px;color:#222;font-weight:500;">Invested</span>
+          </div>
+          <div class="pie-legend-item">
+            <span class="pie-legend-color gain"></span>
+            <span style="font-size:15px;color:#222;font-weight:500;">Gain</span>
+          </div>
+        </div>
+        <div class="amount-labels" id="amountLabels">
+          <div class="amount-label">
+            <div class="invested" id="investedAmountLabel">₹0</div>
+            <div class="desc">Invested</div>
+          </div>
+          <div class="amount-label">
+            <div class="gain" id="gainAmountLabel">₹0</div>
+            <div class="desc">Gain</div>
+          </div>
+        </div>
       </div>
-      <div class="ad-slide">
-        <a href="https://amzn.to/4lxIKPC" target="_blank">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGzmyHsA8o7AFqd9AmNoByEQNA0wLmS4zCqw&s" alt="Amazon Product 2" />
-        </a>
-        <a href="https://amzn.to/4lxIKPC" target="_blank" class="ad-title">Buy Now</a>
-      </div>
-      <div class="ad-slide">
-        <a href="https://amzn.to/4fw2kKx" target="_blank">
-          <img src="https://m.media-amazon.com/images/I/71o8Q5XJS5L._SX679_.jpg" alt="Amazon Product 3" />
-        </a>
-        <a href="https://amzn.to/4fw2kKx" target="_blank" class="ad-title">Buy Now</a>
-      </div>
-      <div class="ad-slide">
-        <a href="https://amzn.to/47m4lqA" target="_blank">
-          <img src="https://m.media-amazon.com/images/I/51aoXk4rzXL._SL1060_.jpg" alt="Amazon Product 4" />
-        </a>
-        <a href="https://amzn.to/47m4lqA" target="_blank" class="ad-title">Buy Now</a>
-      </div>
-      <div class="ad-slide">
-        <a href="https://amzn.to/4lkvVYA" target="_blank">
-          <img src="https://m.media-amazon.com/images/I/71dxcllI6RL._SL1500_.jpg" alt="Amazon Product 5" />
-        </a>
-        <a href="https://amzn.to/4lkvVYA" target="_blank" class="ad-title">Buy Now</a>
-      </div>
-      <div class="ad-slide">
-        <a href="https://amzn.to/3HrImE6" target="_blank">
-          <img src="https://m.media-amazon.com/images/I/91G-YiPPeYL._SL1500_.jpg" alt="Amazon Product 6" />
-        </a>
-        <a href="https://amzn.to/3HrImE6" target="_blank" class="ad-title">Buy Now</a>
+      <div class="ad-slider-container">
+        <div class="ad-slider" id="adSlider">
+          <div class="ad-slide">
+            <a href="https://amzn.to/3H7ftNz" target="_blank">
+              <img src="https://m.media-amazon.com/images/I/71gn83R0DPL._SL1500_.jpg" alt="Amazon Product 1" />
+            </a>
+            <a href="https://amzn.to/3H7ftNz" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+          <div class="ad-slide">
+            <a href="https://amzn.to/4lxIKPC" target="_blank">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGzmyHsA8o7AFqd9AmNoByEQNA0wLmS4zCqw&s" alt="Amazon Product 2" />
+            </a>
+            <a href="https://amzn.to/4lxIKPC" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+          <div class="ad-slide">
+            <a href="https://amzn.to/4fw2kKx" target="_blank">
+              <img src="https://m.media-amazon.com/images/I/71o8Q5XJS5L._SX679_.jpg" alt="Amazon Product 3" />
+            </a>
+            <a href="https://amzn.to/4fw2kKx" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+          <div class="ad-slide">
+            <a href="https://amzn.to/47m4lqA" target="_blank">
+              <img src="https://m.media-amazon.com/images/I/51aoXk4rzXL._SL1060_.jpg" alt="Amazon Product 4" />
+            </a>
+            <a href="https://amzn.to/47m4lqA" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+          <div class="ad-slide">
+            <a href="https://amzn.to/4lkvVYA" target="_blank">
+              <img src="https://m.media-amazon.com/images/I/71dxcllI6RL._SL1500_.jpg" alt="Amazon Product 5" />
+            </a>
+            <a href="https://amzn.to/4lkvVYA" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+          <div class="ad-slide">
+            <a href="https://amzn.to/3HrImE6" target="_blank">
+              <img src="https://m.media-amazon.com/images/I/91G-YiPPeYL._SL1500_.jpg" alt="Amazon Product 6" />
+            </a>
+            <a href="https://amzn.to/3HrImE6" target="_blank" class="ad-title">Buy Now</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+  <div id="adError"></div>
+  <script>
+    // Number to Words (Indian system)
+    function numberToWords(num) {
+      const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+        'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+      const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+      if ((num = num.toString()).length > 9) return 'overflow';
+      let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+      if (!n) return '';
+      let str = '';
+      str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' crore ' : '';
+      str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' lakh ' : '';
+      str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' thousand ' : '';
+      str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' hundred ' : '';
+      str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+      return str.trim();
+    }
 
-<script>
-// Number to Words
-function numberToWords(num) {
-  const a = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-             'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
-  const b = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
-  if ((num = num.toString()).length > 9) return 'overflow';
-  let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
-  if (!n) return;
-  let str = '';
-  str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + ' crore ' : '';
-  str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + ' lakh ' : '';
-  str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + ' thousand ' : '';
-  str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + ' hundred ' : '';
-  str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
-  return str.trim();
-}
+    // Pie Chart Drawing
+    function drawPieChartWithValues(invested, gain) {
+      const canvas = document.getElementById('pieChart');
+      const ctx = canvas.getContext('2d');
+      const total = invested + gain;
+      const investedAngle = total === 0 ? 0 : (invested / total) * 2 * Math.PI;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-// Calculator
-function calculate() {
-  let sip = parseFloat(document.getElementById("sip").value) || 0;
-  let lumpsum = parseFloat(document.getElementById("lumpsum").value) || 0;
-  let years = parseFloat(document.getElementById("years").value) || 0;
-  let rate = parseFloat(document.getElementById("rate").value) || 0;
+      // Shadow
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(130, 140, 100, 0, 2 * Math.PI, false);
+      ctx.shadowColor = "#007bff33";
+      ctx.shadowBlur = 18;
+      ctx.fillStyle = "#fff";
+      ctx.fill();
+      ctx.restore();
 
-  let months = years * 12;
-  let monthlyRate = rate / 12 / 100;
+      // Invested (Blue)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(130, 130);
+      ctx.arc(130, 130, 100, -Math.PI/2, investedAngle - Math.PI/2, false);
+      ctx.closePath();
+      ctx.fillStyle = "#007bff";
+      ctx.shadowColor = "#007bff22";
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.restore();
 
-  let sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
-  let lumpsumMaturity = lumpsum * Math.pow(1 + monthlyRate, months);
+      // Gain (Green)
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(130, 130);
+      ctx.arc(130, 130, 100, investedAngle - Math.PI/2, 1.5 * Math.PI, false);
+      ctx.closePath();
+      ctx.fillStyle = "#28a745";
+      ctx.shadowColor = "#28a74522";
+      ctx.shadowBlur = 6;
+      ctx.fill();
+      ctx.restore();
 
-  let totalInvested = (sip * months) + lumpsum;
-  let maturityAmount = sipMaturity + lumpsumMaturity;
+      // Donut effect
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(130, 130, 62, 0, 2 * Math.PI, false);
+      ctx.fillStyle = "#fff";
+      ctx.shadowColor = "#e3f0ff";
+      ctx.shadowBlur = 2;
+      ctx.fill();
+      ctx.restore();
 
-  document.getElementById("result").innerHTML = `
-    <strong>Total Invested Amount:</strong> ₹${totalInvested.toFixed(2)}<br>
-    (${numberToWords(Math.floor(totalInvested))})<br><br>
-    <strong>Estimated Maturity Amount:</strong> ₹${maturityAmount.toFixed(2)}<br>
-    (${numberToWords(Math.floor(maturityAmount))})
-  `;
-}
+      // Center text
+      ctx.save();
+      ctx.font = "bold 19px 'Segoe UI', Arial, sans-serif";
+      ctx.fillStyle = "#222";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("₹" + (invested + gain).toLocaleString(), 130, 120);
+      ctx.font = "14px 'Segoe UI', Arial, sans-serif";
+      ctx.fillStyle = "#888";
+      ctx.fillText("Maturity", 130, 145);
+      ctx.restore();
+    }
 
-// Auto slider
-let currentAdIndex = 0;
-const totalAds = document.querySelectorAll("#adSlider .ad-slide").length;
+    // Calculator
+    function calculate() {
+      let sip = parseFloat(document.getElementById("sip").value) || 0;
+      let lumpsum = parseFloat(document.getElementById("lumpsum").value) || 0;
+      let years = parseFloat(document.getElementById("years").value) || 0;
+      let rate = parseFloat(document.getElementById("rate").value) || 0;
 
-function showAd(index) {
-  if (index >= totalAds) currentAdIndex = 0;
-  else if (index < 0) currentAdIndex = totalAds - 1;
-  else currentAdIndex = index;
-  document.getElementById("adSlider").style.transform = `translateX(-${currentAdIndex * 100}%)`;
-}
+      let months = years * 12;
+      let monthlyRate = rate / 12 / 100;
 
-setInterval(() => {
-  showAd(currentAdIndex + 1);
-}, 5000);
+      let sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+      let lumpsumMaturity = lumpsum * Math.pow(1 + monthlyRate, months);
 
-showAd(0);
-</script>
+      let totalInvested = (sip * months) + lumpsum;
+      let maturityAmount = sipMaturity + lumpsumMaturity;
+      let gain = maturityAmount - totalInvested;
 
+      document.getElementById("result").innerHTML = `
+        <strong>Total Invested Amount:</strong> ₹${totalInvested.toFixed(2)}<br>
+        (${numberToWords(Math.floor(totalInvested))})<br><br>
+        <strong>Estimated Maturity Amount:</strong> ₹${maturityAmount.toFixed(2)}<br>
+        (${numberToWords(Math.floor(maturityAmount))})
+      `;
+
+      drawPieChartWithValues(totalInvested, gain);
+
+      document.getElementById('investedAmountLabel').textContent = "₹" + totalInvested.toLocaleString();
+      document.getElementById('gainAmountLabel').textContent = "₹" + gain.toLocaleString();
+    }
+
+    // Ad Slider
+    document.addEventListener("DOMContentLoaded", function() {
+      let currentAdIndex = 0;
+      const totalAds = document.querySelectorAll("#adSlider .ad-slide").length;
+
+      function showAd(index) {
+        if (index >= totalAds) currentAdIndex = 0;
+        else if (index < 0) currentAdIndex = totalAds - 1;
+        else currentAdIndex = index;
+        document.getElementById("adSlider").style.transform = `translateX(-${currentAdIndex * 100}%)`;
+      }
+
+      setInterval(() => {
+        showAd(currentAdIndex + 1);
+      }, 5000);
+
+      showAd(0);
+      calculate();
+    });
+
+    window.onerror = function(message) {
+      document.getElementById('adError').textContent = "An error occurred: " + message;
+      return false;
+    };
+  </script>
 </body>
 </html>
