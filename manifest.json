@@ -1,7 +1,7 @@
 {
   "name": "SIP Calculator",
-  "short_name": "WebApp",
-  "start_url": "/index.html",
+  "short_name": "SIP",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#2196f3",
