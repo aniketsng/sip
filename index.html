@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<html lang="en">
+<head>
 <style>
   /* Responsive container and panels */
   .container {
@@ -65,22 +66,8 @@
     .ad-slider-container {
       border-radius: 0;
     }
-    .pie-legend {
-      gap: 10px;
-      font-size: 13px;
-    }
-    .amount-labels {
-      gap: 12px;
-    }
-    #pieChart {
-      width: 180px !important;
-      height: 180px !important;
-      max-width: 100vw;
-    }
   }
 </style>
-<html lang="en">
-<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SIP + Lump Sum Calculator</title>
@@ -184,8 +171,14 @@
     .ad-slide {
       flex: 0 0 100%;
       text-align: center;
-      padding: 0;
+      padding: 0 0 4px;
+      overflow: hidden;
       transition: transform 0.4s, box-shadow 0.4s;
+    }
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
     }
     .ad-slide:hover {
       transform: scale(1.04);
@@ -211,51 +204,213 @@
       text-decoration: none;
       font-size: 17px;
     }
-    /* Pie chart legend and labels */
-    .pie-legend {
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      margin-top: -10px;
-    }
-    .pie-legend-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-    .pie-legend-color {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      border-radius: 4px;
-      box-shadow: 0 1px 4px #007bff33;
-    }
-    .pie-legend-color.gain { background: #28a745; box-shadow: 0 1px 4px #28a74533; }
-    .pie-legend-color.invested { background: #007bff; }
-    .amount-labels {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-top: 16px;
-    }
-    .amount-label {
-      text-align: center;
-    }
-    .amount-label .invested { color: #007bff; font-weight: bold; font-size: 16px; }
-    .amount-label .gain { color: #28a745; font-weight: bold; font-size: 16px; }
-    .amount-label .desc { font-size: 13px; color: #555; }
     #adError {
       color: red;
       text-align: center;
       margin: 30px 0 10px 0;
       font-weight: bold;
-    }, rounded endir      justify  text-align: cen
-      // Removed invested/gain labels from inside the chart
-      // Show and draw chart
-      const chart = document.getElementById('pieChart');
-      chart.style.display = 'block';
-      // Update invested and gain values outside the chart
-
+    }
+    .projection-section {
+      width: min(940px, calc(100% - 32px));
+      margin: 0 auto 30px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 22px;
+      box-sizing: border-box;
+    }
+    .projection-section h3 {
+      margin: 0 0 6px;
+      color: #174f78;
+      text-align: center;
+    }
+    .projection-note {
+      margin: 0 0 18px;
+      color: #66717c;
+      text-align: center;
+      font-size: 14px;
+    }
+    .projection-table-wrap {
+      overflow-x: auto;
+    }
+    .projection-table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .projection-table th,
+    .projection-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #dfe7ed;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .projection-table th:first-child,
+    .projection-table td:first-child {
+      text-align: left;
+    }
+    .projection-table thead th {
+      background: #174f78;
+      color: #fff;
+    }
+    .projection-table tbody tr:nth-child(even) {
+      background: #f5f8fa;
+    }
+    .projection-table tbody td:not(:first-child) {
+      color: #174f78;
+      font-weight: 600;
+    }
+    .right-panel .projection-section {
+      width: 100%;
+      margin: 0;
+      padding: 14px 8px;
+      box-sizing: border-box;
+      box-shadow: none;
+    }
+    @media (min-width: 901px) {
+      .container {
+        max-width: 1120px;
+      }
+      .right-panel {
+        flex: 1 1 620px;
+        max-width: 660px;
+      }
+      .projection-table {
+        min-width: 0;
+        table-layout: fixed;
+        font-size: 12px;
+      }
+      .projection-table th,
+      .projection-table td {
+        padding: 9px 6px;
+      }
+      .projection-table th:first-child,
+      .projection-table td:first-child {
+        width: 10%;
+      }
+      .projection-table th:nth-child(2),
+      .projection-table td:nth-child(2) {
+        width: 22%;
+      }
+      .projection-table th:nth-child(n+3),
+      .projection-table td:nth-child(n+3) {
+        width: 22.6%;
+      }
+    }
+    @media (max-width: 600px) {
+      .projection-section {
+        width: 100%;
+        margin-bottom: 0;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 16px 8px;
+      }
+      .ad-grid {
+        display: contents;
+      }
+      .right-panel .projection-section {
+        order: 2;
+      }
+      .right-panel #adPanel {
+        order: 1;
+      }
+      .right-panel #adPanelSecond {
+        order: 3;
+      }
+      .ad-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      body {
+        background: #eef3f7;
+      }
+      .container {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 18px 12px 24px;
+        gap: 18px;
+      }
+      .left-panel,
+      .right-panel {
+        padding: 0;
+        min-width: 0;
+        width: 100%;
+      }
+      h2 {
+        font-size: 24px;
+        line-height: 1.2;
+        margin: 2px 0 22px;
+      }
+      label {
+        margin: 16px 0 7px;
+        font-size: 14px;
+      }
+      input[type="number"] {
+        min-height: 48px;
+        padding: 12px 13px;
+        border-color: #c7d2dc;
+        border-radius: 10px;
+      }
+      button {
+        min-height: 48px;
+        margin-top: 22px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+      .result {
+        margin-top: 18px;
+        padding: 15px 14px;
+        border-radius: 10px;
+        line-height: 1.45;
+      }
+      .right-panel {
+        margin-top: 0;
+        gap: 14px;
+      }
+      .right-panel .projection-section {
+        padding: 18px 0 4px;
+      }
+      .projection-section h3 {
+        font-size: 20px;
+      }
+      .projection-note {
+        max-width: 330px;
+        margin: 0 auto 16px;
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .projection-table-wrap {
+        margin: 0 -2px;
+        padding-bottom: 5px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .projection-table {
+        min-width: 610px;
+        font-size: 12px;
+      }
+      .projection-table th,
+      .projection-table td {
+        padding: 10px 9px;
+      }
+      .ad-grid {
+        width: 100%;
+        gap: 14px;
+      }
+      .ad-slider-container {
+        margin-top: 0;
+        border-radius: 12px;
+      }
+      .ad-slide img {
+        max-height: 190px;
+      }
+      .ad-title {
+        margin: 9px 0 10px;
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -263,20 +418,21 @@
     <div class="left-panel">
       <h2>SIP + Lump Sum Calculator</h2>
       <label for="sip">Monthly SIP Investment (₹)</label>
-      <input type="number" id="sip" value="0" />
+      <input type="number" id="sip" value="5000" min="0" step="100" />
       <label for="lumpsum">Lump Sum Investment (₹)</label>
-      <input type="number" id="lumpsum" value="0" />
+      <input type="number" id="lumpsum" value="0" min="0" step="100" />
       <label for="years">Investment Period (Years)</label>
-      <input type="number" id="years" value="10" />
+      <input type="number" id="years" value="10" min="0" step="1" />
       <label for="rate">Expected Annual Return (%)</label>
-      <input type="number" id="rate" value="12" />
+      <input type="number" id="rate" value="12" min="0" step="0.1" />
       <button onclick="calculate()">Calculate</button>
       <script>
         // Persist input values using localStorage
         function persistInputs() {
           ["sip", "lumpsum", "years", "rate"].forEach(function(id) {
             var el = document.getElementById(id);
-            el.value = localStorage.getItem("sipcalc_" + id) || el.value;
+            var savedValue = Number.parseFloat(localStorage.getItem("sipcalc_" + id));
+            if (Number.isFinite(savedValue)) el.value = Math.max(0, savedValue);
             el.addEventListener("input", function() {
               localStorage.setItem("sipcalc_" + id, el.value);
             });
@@ -287,30 +443,7 @@
       <div id="result" class="result"></div>
     </div>
     <div class="right-panel">
-      <div style="background:linear-gradient(135deg,#e3f0ff 0%,#f8fff8 100%);border-radius:18px;box-shadow:0 2px 12px rgba(0,123,255,0.08);padding:22px 10px 18px 10px;width:100%;display:flex;flex-direction:column;align-items:center;">
-        <canvas id="pieChart" width="260" height="260" style="margin-bottom:18px;display:block;"></canvas>
-        <div class="pie-legend">
-          <div class="pie-legend-item">
-            <span class="pie-legend-color invested"></span>
-            <span style="font-size:15px;color:#222;font-weight:500;">Invested</span>
-          </div>
-          <div class="pie-legend-item">
-            <span class="pie-legend-color gain"></span>
-            <span style="font-size:15px;color:#222;font-weight:500;">Gain</span>
-          </div>
-        </div>
-        <div class="amount-labels" id="amountLabels">
-          <div class="amount-label">
-            <div class="invested" id="investedAmountLabel">₹0</div>
-            <div class="desc">Invested</div>
-          </div>
-          <div class="amount-label">
-            <div class="gain" id="gainAmountLabel">₹0</div>
-            <div class="desc">Gain</div>
-          </div>
-        </div>
-      </div>
-      <div class="ad-slider-container">
+      <div id="adPanel" class="ad-slider-container">
         <div class="ad-slider" id="adSlider">
           <div class="ad-slide">
             <a href="https://amzn.to/3H7ftNz" target="_blank">
@@ -352,6 +485,24 @@
       </div>
     </div>
   </div>
+  <section class="projection-section" aria-labelledby="projectionTitle">
+    <h3 id="projectionTitle">Projected SIP Corpus</h3>
+    <p class="projection-note">Based on the monthly SIP entered above. Compare estimated maturity values across return assumptions.</p>
+    <div class="projection-table-wrap">
+      <table class="projection-table">
+        <thead>
+          <tr>
+            <th>Years</th>
+            <th>Total Invested</th>
+            <th>12%</th>
+            <th>15%</th>
+            <th>18%</th>
+          </tr>
+        </thead>
+        <tbody id="projectionBody"></tbody>
+      </table>
+    </div>
+  </section>
   <div id="adError"></div>
   <script>
     // Number to Words (Indian system)
@@ -371,82 +522,53 @@
       return str.trim();
     }
 
-    // Pie Chart Drawing
-    function drawPieChartWithValues(invested, gain) {
-      const canvas = document.getElementById('pieChart');
-      const ctx = canvas.getContext('2d');
-      const total = invested + gain;
-      const investedAngle = total === 0 ? 0 : (invested / total) * 2 * Math.PI;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    function calculateSipMaturity(sip, years, annualRate) {
+      const months = years * 12;
+      const monthlyRate = annualRate / 12 / 100;
+      if (months <= 0) return 0;
+      if (monthlyRate === 0) return sip * months;
+      return sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+    }
 
-      // Shadow
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(130, 140, 100, 0, 2 * Math.PI, false);
-      ctx.shadowColor = "#007bff33";
-      ctx.shadowBlur = 18;
-      ctx.fillStyle = "#fff";
-      ctx.fill();
-      ctx.restore();
+    function formatCurrency(value) {
+      return "₹" + Math.round(value).toLocaleString("en-IN");
+    }
 
-      // Invested (Blue)
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(130, 130);
-      ctx.arc(130, 130, 100, -Math.PI/2, investedAngle - Math.PI/2, false);
-      ctx.closePath();
-      ctx.fillStyle = "#007bff";
-      ctx.shadowColor = "#007bff22";
-      ctx.shadowBlur = 6;
-      ctx.fill();
-      ctx.restore();
+    function getNonNegativeValue(id) {
+      const value = Number.parseFloat(document.getElementById(id).value);
+      return Number.isFinite(value) ? Math.max(0, value) : 0;
+    }
 
-      // Gain (Green)
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(130, 130);
-      ctx.arc(130, 130, 100, investedAngle - Math.PI/2, 1.5 * Math.PI, false);
-      ctx.closePath();
-      ctx.fillStyle = "#28a745";
-      ctx.shadowColor = "#28a74522";
-      ctx.shadowBlur = 6;
-      ctx.fill();
-      ctx.restore();
+    function updateProjection() {
+      const sip = getNonNegativeValue("sip");
+      const rates = [12, 15, 18];
+      const yearsList = [5, 10, 20, 25, 30, 35];
+      const rows = yearsList.map(years => ({
+        years,
+        invested: sip * years * 12,
+        values: Object.fromEntries(rates.map(rate => [rate, calculateSipMaturity(sip, years, rate)]))
+      }));
 
-      // Donut effect
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(130, 130, 62, 0, 2 * Math.PI, false);
-      ctx.fillStyle = "#fff";
-      ctx.shadowColor = "#e3f0ff";
-      ctx.shadowBlur = 2;
-      ctx.fill();
-      ctx.restore();
-
-      // Center text
-      ctx.save();
-      ctx.font = "bold 19px 'Segoe UI', Arial, sans-serif";
-      ctx.fillStyle = "#222";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("₹" + (invested + gain).toLocaleString(), 130, 120);
-      ctx.font = "14px 'Segoe UI', Arial, sans-serif";
-      ctx.fillStyle = "#888";
-      ctx.fillText("Maturity", 130, 145);
-      ctx.restore();
+      document.getElementById("projectionBody").innerHTML = rows.map(row => `
+        <tr>
+          <td>${row.years}</td>
+          <td>${formatCurrency(row.invested)}</td>
+          ${rates.map(rate => `<td>${formatCurrency(row.values[rate])}</td>`).join("")}
+        </tr>
+      `).join("");
     }
 
     // Calculator
     function calculate() {
-      let sip = parseFloat(document.getElementById("sip").value) || 0;
-      let lumpsum = parseFloat(document.getElementById("lumpsum").value) || 0;
-      let years = parseFloat(document.getElementById("years").value) || 0;
-      let rate = parseFloat(document.getElementById("rate").value) || 0;
+      let sip = getNonNegativeValue("sip");
+      let lumpsum = getNonNegativeValue("lumpsum");
+      let years = getNonNegativeValue("years");
+      let rate = getNonNegativeValue("rate");
 
       let months = years * 12;
       let monthlyRate = rate / 12 / 100;
 
-      let sipMaturity = sip * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate);
+      let sipMaturity = calculateSipMaturity(sip, years, rate);
       let lumpsumMaturity = lumpsum * Math.pow(1 + monthlyRate, months);
 
       let totalInvested = (sip * months) + lumpsum;
@@ -460,29 +582,45 @@
         (${numberToWords(Math.floor(maturityAmount))})
       `;
 
-      drawPieChartWithValues(totalInvested, gain);
-
-      document.getElementById('investedAmountLabel').textContent = "₹" + totalInvested.toLocaleString();
-      document.getElementById('gainAmountLabel').textContent = "₹" + gain.toLocaleString();
+      updateProjection();
     }
 
     // Ad Slider
     document.addEventListener("DOMContentLoaded", function() {
-      let currentAdIndex = 0;
-      const totalAds = document.querySelectorAll("#adSlider .ad-slide").length;
+      const rightPanel = document.querySelector(".right-panel");
+      const projectionSection = document.querySelector(".projection-section");
+      const adPanel = document.getElementById("adPanel");
+      rightPanel.prepend(projectionSection);
+      const secondAdPanel = adPanel.cloneNode(true);
+      secondAdPanel.id = "adPanelSecond";
+      secondAdPanel.querySelector("#adSlider").id = "adSliderSecond";
+      const adGrid = document.createElement("div");
+      adGrid.className = "ad-grid";
+      adGrid.append(adPanel, secondAdPanel);
+      rightPanel.append(adGrid);
 
-      function showAd(index) {
-        if (index >= totalAds) currentAdIndex = 0;
-        else if (index < 0) currentAdIndex = totalAds - 1;
-        else currentAdIndex = index;
-        document.getElementById("adSlider").style.transform = `translateX(-${currentAdIndex * 100}%)`;
+      const adSliders = [
+        document.getElementById("adSlider"),
+        document.getElementById("adSliderSecond")
+      ];
+      let currentAdIndex = 0;
+      const totalAds = adSliders[0].querySelectorAll(".ad-slide").length;
+
+      function showAd(slider, index) {
+        slider.style.transform = `translateX(-${index * 100}%)`;
       }
 
+      function showDifferentAds() {
+        showAd(adSliders[0], currentAdIndex);
+        showAd(adSliders[1], (currentAdIndex + 1) % totalAds);
+      }
+
+      showDifferentAds();
       setInterval(() => {
-        showAd(currentAdIndex + 1);
+        currentAdIndex = (currentAdIndex + 1) % totalAds;
+        showDifferentAds();
       }, 5000);
 
-      showAd(0);
       calculate();
     });
 
