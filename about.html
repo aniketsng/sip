@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#2196f3" />
+  <title>About | SIP Calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #eef3f7;
+      --surface: #fff;
+      --text: #17232d;
+      --muted: #66717c;
+      --primary: #087ff5;
+      --border: #c7d2dc;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      background: var(--page);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+    .page {
+      width: min(940px, 100%);
+      margin: 0 auto;
+      padding: 24px;
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(25, 55, 80, 0.12);
+    }
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    h1 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 28px;
+    }
+    .back-link,
+    .theme-button {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--surface);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .more-menu { position: relative; display: inline-block; }
+    .more-menu summary {
+      list-style: none;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: var(--surface);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .more-menu summary::-webkit-details-marker { display: none; }
+    .more-menu-content {
+      position: absolute;
+      z-index: 2;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 160px;
+      padding: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(25, 55, 80, 0.15);
+    }
+    .more-menu-content a,
+    .more-menu-content button {
+      display: block;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--primary);
+      font: inherit;
+      font-size: 13px;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .more-menu-content a:hover,
+    .more-menu-content button:hover { background: #eef5fa; }
+    .more-menu-content a + a,
+    .more-menu-content a + button { border-top: 1px solid var(--border); }
+    .about-copy {
+      padding: 22px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
+      text-align: center;
+    }
+    .about-copy h2 { margin: 0 0 10px; color: var(--primary); }
+    .about-copy p {
+      max-width: 620px;
+      margin: 8px auto;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .ad-box {
+      overflow: hidden;
+      border: 1px solid #ffd966;
+      border-radius: 10px;
+      background: #fff9e6;
+    }
+    .ad-box h3 {
+      margin: 0;
+      padding: 12px;
+      color: #8b4a0b;
+      font-size: 15px;
+      text-align: center;
+    }
+    .ad-slider {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(.4,1,.4,1);
+    }
+    .ad-slide {
+      flex: 0 0 100%;
+      overflow: hidden;
+      padding-bottom: 4px;
+      text-align: center;
+    }
+    .ad-slide img {
+      display: block;
+      width: 100%;
+      height: 210px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .ad-title {
+      display: block;
+      margin: 9px 0 10px;
+      color: #d35400;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    body.dark {
+      color-scheme: dark;
+      --page: #17232d;
+      --surface: #223440;
+      --text: #eef5f9;
+      --muted: #c4d4de;
+      --primary: #72c3ff;
+      --border: #3d5868;
+    }
+    @media (max-width: 650px) {
+      body { padding: 0; }
+      .page { padding: 18px 12px 24px; border-radius: 0; box-shadow: none; }
+      .topbar { align-items: center; }
+      h1 { font-size: 24px; }
+      .about-copy { padding: 18px 14px; }
+      .ad-grid { grid-template-columns: 1fr; gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="topbar">
+      <h1>About This Calculator</h1>
+      <div>
+        <details class="more-menu">
+          <summary>More</summary>
+          <div class="more-menu-content">
+            <a href="index.html">SIP calculator</a>
+            <a href="return-calculator.html">Return calculator</a>
+            <button type="button" id="themeButton">Change theme</button>
+          </div>
+        </details>
+      </div>
+    </div>
+    <section class="about-copy">
+      <h2>Made by Angh</h2>
+      <p>This SIP and Return Calculator was made by <strong>Angh</strong> with support from <strong>Ishvanta Digital Services</strong>.</p>
+      <p>It helps you compare investment growth, current returns, and long-term projections in a simple, practical view.</p>
+    </section>
+    <section class="ad-grid" aria-label="Sponsored products">
+      <div class="ad-box">
+        <h3>Featured products</h3>
+        <div class="ad-slider" id="adSliderOne">
+          <div class="ad-slide"><a href="https://amzn.to/3H7ftNz" target="_blank"><img src="https://m.media-amazon.com/images/I/71gn83R0DPL._SL1500_.jpg" alt="Featured product 1" /></a><a class="ad-title" href="https://amzn.to/3H7ftNz" target="_blank">Buy Now</a></div>
+          <div class="ad-slide"><a href="https://amzn.to/4lxIKPC" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGzmyHsA8o7AFqd9AmNoByEQNA0wLmS4zCqw&s" alt="Featured product 2" /></a><a class="ad-title" href="https://amzn.to/4lxIKPC" target="_blank">Buy Now</a></div>
+          <div class="ad-slide"><a href="https://amzn.to/4fw2kKx" target="_blank"><img src="https://m.media-amazon.com/images/I/71o8Q5XJS5L._SX679_.jpg" alt="Featured product 3" /></a><a class="ad-title" href="https://amzn.to/4fw2kKx" target="_blank">Buy Now</a></div>
+        </div>
+      </div>
+      <div class="ad-box">
+        <h3>More products</h3>
+        <div class="ad-slider" id="adSliderTwo">
+          <div class="ad-slide"><a href="https://amzn.to/47m4lqA" target="_blank"><img src="https://m.media-amazon.com/images/I/51aoXk4rzXL._SL1060_.jpg" alt="More product 1" /></a><a class="ad-title" href="https://amzn.to/47m4lqA" target="_blank">Buy Now</a></div>
+          <div class="ad-slide"><a href="https://amzn.to/4lkvVYA" target="_blank"><img src="https://m.media-amazon.com/images/I/71dxcllI6RL._SL1500_.jpg" alt="More product 2" /></a><a class="ad-title" href="https://amzn.to/4lkvVYA" target="_blank">Buy Now</a></div>
+          <div class="ad-slide"><a href="https://amzn.to/3HrImE6" target="_blank"><img src="https://m.media-amazon.com/images/I/91G-YiPPeYL._SL1500_.jpg" alt="More product 3" /></a><a class="ad-title" href="https://amzn.to/3HrImE6" target="_blank">Buy Now</a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    if (localStorage.getItem("sipcalc_theme") === "dark") document.body.classList.add("dark");
+    document.getElementById("themeButton").addEventListener("click", () => {
+      const dark = document.body.classList.toggle("dark");
+      localStorage.setItem("sipcalc_theme", dark ? "dark" : "light");
+    });
+    let adIndex = 0;
+    const sliders = [document.getElementById("adSliderOne"), document.getElementById("adSliderTwo")];
+    const totalAds = 3;
+    function showAds() {
+      sliders[0].style.transform = `translateX(-${adIndex * 100}%)`;
+      sliders[1].style.transform = `translateX(-${((adIndex + 1) % totalAds) * 100}%)`;
+    }
+    showAds();
+    setInterval(() => {
+      adIndex = (adIndex + 1) % totalAds;
+      showAds();
+    }, 5000);
+  </script>
+</body>
+</html>

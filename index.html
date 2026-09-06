@@ -113,6 +113,128 @@
       color: #007bff;
       margin-bottom: 20px;
     }
+    .calculator-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .calculator-header h2 {
+      flex: 1;
+      margin: 0;
+    }
+    .more-menu {
+      position: relative;
+      flex: 0 0 auto;
+      margin-top: -4px;
+      z-index: 5;
+    }
+    .more-menu summary {
+      list-style: none;
+      padding: 7px 10px;
+      border: 1px solid #c7d2dc;
+      border-radius: 8px;
+      color: #174f78;
+      background: #fff;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .more-menu summary::-webkit-details-marker {
+      display: none;
+    }
+    .more-menu-content {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 150px;
+      padding: 6px;
+      background: #fff;
+      border: 1px solid #d7e0e7;
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(25, 55, 80, 0.15);
+    }
+    .more-menu-content button {
+      width: 100%;
+      margin: 0;
+      padding: 9px 10px;
+      background: transparent;
+      color: #174f78;
+      font-size: 13px;
+      text-align: left;
+    }
+    .more-menu-content button:hover {
+      background: #eef5fa;
+    }
+    .more-menu-content button + button {
+      border-top: 1px solid #d7e0e7;
+    }
+    body.dark-theme {
+      background: #17232d;
+      color: #eef5f9;
+    }
+    body.dark-theme .container,
+    body.dark-theme .projection-section {
+      background: #223440;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+    body.dark-theme h2,
+    body.dark-theme .projection-section h3 {
+      color: #72c3ff;
+    }
+    body.dark-theme label,
+    body.dark-theme .result,
+    body.dark-theme .projection-note {
+      color: #eef5f9;
+    }
+    body.dark-theme input[type="number"],
+    body.dark-theme .result {
+      background: #2d4351;
+      border-color: #557080;
+      color: #fff;
+    }
+    body.dark-theme .more-menu summary,
+    body.dark-theme .more-menu-content {
+      background: #2d4351;
+      border-color: #557080;
+      color: #fff;
+    }
+    body.dark-theme .more-menu-content button {
+      color: #fff;
+    }
+    body.dark-theme .more-menu-content button:hover {
+      background: #3a5566;
+    }
+    body.dark-theme .more-menu-content button + button {
+      border-top-color: #557080;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    body.return-mode .right-panel {
+      justify-content: flex-start;
+    }
+    body.dark-theme .projection-table th,
+    body.dark-theme .projection-table td {
+      border-color: #3d5868;
+    }
+    body.dark-theme .projection-table thead th {
+      background: #17608a;
+      color: #fff;
+    }
+    body.dark-theme .projection-table tbody tr,
+    body.dark-theme .projection-table tbody tr:nth-child(even) {
+      background: #223440;
+    }
+    body.dark-theme .projection-table tbody tr:nth-child(odd) {
+      background: #1d2d37;
+    }
+    body.dark-theme .projection-table tbody td {
+      color: #e8f4fa;
+    }
+    body.dark-theme .projection-table tbody td:not(:first-child) {
+      color: #8fd3ff;
+    }
     label {
       font-weight: bold;
       display: block;
@@ -416,20 +538,32 @@
 <body>
   <div class="container">
     <div class="left-panel">
-      <h2>SIP + Lump Sum Calculator</h2>
-      <label for="sip">Monthly SIP Investment (₹)</label>
+      <div class="calculator-header">
+        <h2 id="calculatorTitle">SIP + Lump Sum Calculator</h2>
+        <details class="more-menu">
+          <summary>More</summary>
+          <div class="more-menu-content">
+            <button type="button" id="themeButton">Change theme</button>
+            <a href="about.html">About</a>
+            <button type="button" id="modeButton">Return calculator</button>
+          </div>
+        </details>
+      </div>
+      <label id="sipLabel" for="sip">Monthly SIP Investment (₹)</label>
       <input type="number" id="sip" value="5000" min="0" step="100" />
-      <label for="lumpsum">Lump Sum Investment (₹)</label>
+      <label id="currentValueLabel" for="currentValue" hidden>Current Investment Value (₹)</label>
+      <input type="number" id="currentValue" value="0" min="0" step="100" hidden />
+      <label id="lumpsumLabel" for="lumpsum">Lump Sum Investment (₹)</label>
       <input type="number" id="lumpsum" value="0" min="0" step="100" />
-      <label for="years">Investment Period (Years)</label>
+      <label id="yearsLabel" for="years">Investment Period (Years)</label>
       <input type="number" id="years" value="10" min="0" step="1" />
-      <label for="rate">Expected Annual Return (%)</label>
+      <label id="rateLabel" for="rate">Expected Annual Return (%)</label>
       <input type="number" id="rate" value="12" min="0" step="0.1" />
       <button onclick="calculate()">Calculate</button>
       <script>
         // Persist input values using localStorage
         function persistInputs() {
-          ["sip", "lumpsum", "years", "rate"].forEach(function(id) {
+          ["sip", "currentValue", "lumpsum", "years", "rate"].forEach(function(id) {
             var el = document.getElementById(id);
             var savedValue = Number.parseFloat(localStorage.getItem("sipcalc_" + id));
             if (Number.isFinite(savedValue)) el.value = Math.max(0, savedValue);
@@ -487,13 +621,13 @@
   </div>
   <section class="projection-section" aria-labelledby="projectionTitle">
     <h3 id="projectionTitle">Projected SIP Corpus</h3>
-    <p class="projection-note">Based on the monthly SIP entered above. Compare estimated maturity values across return assumptions.</p>
+    <p id="projectionNote" class="projection-note">Based on the monthly SIP entered above. Compare estimated maturity values across return assumptions.</p>
     <div class="projection-table-wrap">
       <table class="projection-table">
         <thead>
           <tr>
             <th>Years</th>
-            <th>Total Invested</th>
+            <th id="projectionAmountHeader">Total Invested</th>
             <th>12%</th>
             <th>15%</th>
             <th>18%</th>
@@ -539,14 +673,53 @@
       return Number.isFinite(value) ? Math.max(0, value) : 0;
     }
 
+    let returnMode = false;
+
+    function updateModeUI() {
+      document.body.classList.toggle("return-mode", returnMode);
+      document.getElementById("calculatorTitle").textContent = returnMode
+        ? "Return Calculator"
+        : "SIP + Lump Sum Calculator";
+      document.getElementById("sipLabel").textContent = returnMode
+        ? "Initial Investment (₹)"
+        : "Monthly SIP Investment (₹)";
+      document.getElementById("currentValueLabel").hidden = !returnMode;
+      document.getElementById("currentValue").hidden = !returnMode;
+      document.getElementById("lumpsumLabel").hidden = returnMode;
+      document.getElementById("lumpsum").hidden = returnMode;
+      document.getElementById("yearsLabel").textContent = returnMode
+        ? "Investment Period (Years)"
+        : "Investment Period (Years)";
+      document.getElementById("rateLabel").hidden = returnMode;
+      document.getElementById("rate").hidden = returnMode;
+      document.getElementById("projectionTitle").textContent = returnMode
+        ? "Projected Investment Value"
+        : "Projected SIP Corpus";
+      document.getElementById("projectionNote").textContent = returnMode
+        ? "Based on the initial investment. Compare estimated values across return assumptions."
+        : "Based on the monthly SIP entered above. Compare estimated maturity values across return assumptions.";
+      document.getElementById("projectionAmountHeader").textContent = returnMode
+        ? "Initial Investment"
+        : "Total Invested";
+      document.getElementById("modeButton").textContent = returnMode
+        ? "SIP calculator"
+        : "Return calculator";
+      calculate();
+    }
+
     function updateProjection() {
       const sip = getNonNegativeValue("sip");
       const rates = [12, 15, 18];
       const yearsList = [5, 10, 20, 25, 30, 35];
       const rows = yearsList.map(years => ({
         years,
-        invested: sip * years * 12,
-        values: Object.fromEntries(rates.map(rate => [rate, calculateSipMaturity(sip, years, rate)]))
+        invested: returnMode ? sip : sip * years * 12,
+        values: Object.fromEntries(rates.map(rate => [
+          rate,
+          returnMode
+            ? sip * Math.pow(1 + rate / 100, years)
+            : calculateSipMaturity(sip, years, rate)
+        ]))
       }));
 
       document.getElementById("projectionBody").innerHTML = rows.map(row => `
@@ -564,6 +737,32 @@
       let lumpsum = getNonNegativeValue("lumpsum");
       let years = getNonNegativeValue("years");
       let rate = getNonNegativeValue("rate");
+
+      if (returnMode) {
+        const currentValue = getNonNegativeValue("currentValue");
+        if (currentValue <= 0) {
+          document.getElementById("result").innerHTML =
+            "<strong>Enter your current investment value to calculate the return.</strong>";
+          updateProjection();
+          return;
+        }
+        const maturityAmount = currentValue;
+        const gain = maturityAmount - sip;
+        const returnPercentage = sip > 0 ? (gain / sip) * 100 : 0;
+        const annualizedReturn = sip > 0 && years > 0
+          ? (Math.pow(maturityAmount / sip, 1 / years) - 1) * 100
+          : 0;
+        document.getElementById("result").innerHTML = `
+          <strong>Initial Investment:</strong> ₹${sip.toFixed(2)}<br>
+          <strong>Current Value:</strong> ₹${maturityAmount.toFixed(2)}<br>
+          <strong>Total Return:</strong> ₹${gain.toFixed(2)}<br>
+          <strong>Return Percentage:</strong> ${returnPercentage.toFixed(2)}%<br><br>
+          <strong>Annualized Return:</strong> ${annualizedReturn.toFixed(2)}%<br>
+          (${numberToWords(Math.floor(maturityAmount))})
+        `;
+        updateProjection();
+        return;
+      }
 
       let months = years * 12;
       let monthlyRate = rate / 12 / 100;
@@ -587,6 +786,21 @@
 
     // Ad Slider
     document.addEventListener("DOMContentLoaded", function() {
+      const themeButton = document.getElementById("themeButton");
+      const modeButton = document.getElementById("modeButton");
+      const moreMenu = document.querySelector(".more-menu");
+      const savedTheme = localStorage.getItem("sipcalc_theme");
+      returnMode = false;
+      if (savedTheme === "dark") document.body.classList.add("dark-theme");
+      themeButton.addEventListener("click", function() {
+        const isDark = document.body.classList.toggle("dark-theme");
+        localStorage.setItem("sipcalc_theme", isDark ? "dark" : "light");
+        moreMenu.open = false;
+      });
+      modeButton.addEventListener("click", function() {
+        window.location.href = "return-calculator.html";
+      });
+
       const rightPanel = document.querySelector(".right-panel");
       const projectionSection = document.querySelector(".projection-section");
       const adPanel = document.getElementById("adPanel");
@@ -621,7 +835,7 @@
         showDifferentAds();
       }, 5000);
 
-      calculate();
+      updateModeUI();
     });
 
     window.onerror = function(message) {

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#2196f3" />
+  <title>Return Calculator</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #eef3f7;
+      --surface: #ffffff;
+      --text: #17232d;
+      --muted: #66717c;
+      --primary: #087ff5;
+      --primary-dark: #174f78;
+      --border: #c7d2dc;
+      --result: #f0f4f8;
+      --header: #174f78;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 30px 16px;
+      background: var(--page);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+    }
+    .page {
+      width: min(1120px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(280px, 400px) minmax(0, 1fr);
+      gap: 32px;
+      padding: 24px;
+      background: var(--surface);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px rgba(25, 55, 80, 0.12);
+    }
+    .calculator-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    h1 {
+      flex: 1;
+      margin: 0;
+      color: var(--primary);
+      font-size: 26px;
+      line-height: 1.2;
+      text-align: center;
+    }
+    .more-menu { position: relative; flex: 0 0 auto; }
+    .more-menu summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--primary-dark);
+      background: var(--surface);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .more-menu summary::-webkit-details-marker { display: none; }
+    .menu-content {
+      position: absolute;
+      z-index: 2;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 160px;
+      padding: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(25, 55, 80, 0.15);
+    }
+    .menu-content a,
+    .menu-content button {
+      display: block;
+      width: 100%;
+      padding: 9px 10px;
+      border: 0;
+      background: transparent;
+      color: var(--primary-dark);
+      font: inherit;
+      font-size: 13px;
+      text-align: left;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .menu-content a:hover,
+    .menu-content button:hover { background: #eef5fa; }
+    .menu-content a + button { border-top: 1px solid var(--border); }
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-weight: 700;
+    }
+    input {
+      width: 100%;
+      min-height: 48px;
+      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 16px;
+    }
+    button.calculate {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 22px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.calculate:hover { background: #0669ca; }
+    .result {
+      margin-top: 18px;
+      padding: 16px 14px;
+      border-radius: 10px;
+      background: var(--result);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .projection {
+      min-width: 0;
+      padding: 16px;
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--surface) 88%, var(--primary) 12%);
+    }
+    h2 {
+      margin: 0 0 6px;
+      color: var(--primary-dark);
+      font-size: 21px;
+      text-align: center;
+    }
+    .note {
+      margin: 0 auto 18px;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+      text-align: center;
+    }
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: right;
+      white-space: nowrap;
+    }
+    th:first-child, td:first-child { text-align: left; }
+    thead th { background: var(--header); color: #fff; }
+    tbody tr:nth-child(even) { background: color-mix(in srgb, var(--surface) 90%, var(--primary) 10%); }
+    tbody td:not(:first-child) { color: var(--primary-dark); font-weight: 700; }
+    .ad-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .ad-slider-container {
+      overflow: hidden;
+      border: 1px solid #ffd966;
+      border-radius: 8px;
+      background: #fff9e6;
+    }
+    .ad-slider {
+      display: flex;
+      transition: transform 0.6s cubic-bezier(.4,1,.4,1);
+    }
+    .ad-slide {
+      flex: 0 0 100%;
+      overflow: hidden;
+      padding-bottom: 4px;
+      text-align: center;
+    }
+    .ad-slide img {
+      display: block;
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      background: #fff;
+    }
+    .ad-title {
+      display: block;
+      margin: 9px 0 10px;
+      color: #d35400;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    body.dark {
+      color-scheme: dark;
+      --page: #17232d;
+      --surface: #223440;
+      --text: #eef5f9;
+      --muted: #c4d4de;
+      --primary: #72c3ff;
+      --primary-dark: #9ed8ff;
+      --border: #3d5868;
+      --result: #2d4351;
+      --header: #17608a;
+    }
+    @media (max-width: 760px) {
+      body { padding: 0; }
+      .page {
+        width: 100%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 18px 12px 24px;
+        border-radius: 0;
+        box-shadow: none;
+      }
+      h1 { font-size: 24px; }
+      .projection { padding: 16px 0 4px; }
+      .projection h2 { font-size: 20px; }
+      .note { font-size: 13px; }
+      .ad-grid { grid-template-columns: 1fr; }
+      .ad-slide img { max-height: 190px; }
+      table { min-width: 560px; font-size: 12px; }
+      th, td { padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section>
+      <div class="calculator-header">
+        <h1>Return Calculator</h1>
+        <details class="more-menu">
+          <summary>More</summary>
+          <div class="menu-content">
+            <a href="index.html">SIP calculator</a>
+            <a href="about.html">About</a>
+            <button type="button" id="themeButton">Change theme</button>
+          </div>
+        </details>
+      </div>
+      <label for="initialInvestment">Initial Investment (₹)</label>
+      <input id="initialInvestment" type="number" min="0" step="100" value="5000" />
+      <label for="currentValue">Current Investment Value (₹)</label>
+      <input id="currentValue" type="number" min="0" step="100" value="0" />
+      <label for="years">Investment Period (Years)</label>
+      <input id="years" type="number" min="0" step="1" value="10" />
+      <button class="calculate" type="button" id="calculateButton">Calculate</button>
+      <div class="result" id="result" aria-live="polite"></div>
+    </section>
+    <section class="projection" aria-labelledby="projectionTitle">
+      <h2 id="projectionTitle">Projected Investment Value</h2>
+      <p class="note">Based on the initial investment. Compare estimated values across return assumptions.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Years</th><th>Initial Investment</th><th>12%</th><th>15%</th><th>18%</th></tr>
+          </thead>
+          <tbody id="projectionBody"></tbody>
+        </table>
+      </div>
+      <div class="ad-grid">
+        <div id="adPanel" class="ad-slider-container">
+          <div class="ad-slider" id="adSlider">
+            <div class="ad-slide"><a href="https://amzn.to/3H7ftNz" target="_blank"><img src="https://m.media-amazon.com/images/I/71gn83R0DPL._SL1500_.jpg" alt="Amazon Product 1" /></a><a href="https://amzn.to/3H7ftNz" target="_blank" class="ad-title">Buy Now</a></div>
+            <div class="ad-slide"><a href="https://amzn.to/4lxIKPC" target="_blank"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSGzmyHsA8o7AFqd9AmNoByEQNA0wLmS4zCqw&s" alt="Amazon Product 2" /></a><a href="https://amzn.to/4lxIKPC" target="_blank" class="ad-title">Buy Now</a></div>
+            <div class="ad-slide"><a href="https://amzn.to/4fw2kKx" target="_blank"><img src="https://m.media-amazon.com/images/I/71o8Q5XJS5L._SX679_.jpg" alt="Amazon Product 3" /></a><a href="https://amzn.to/4fw2kKx" target="_blank" class="ad-title">Buy Now</a></div>
+            <div class="ad-slide"><a href="https://amzn.to/47m4lqA" target="_blank"><img src="https://m.media-amazon.com/images/I/51aoXk4rzXL._SL1060_.jpg" alt="Amazon Product 4" /></a><a href="https://amzn.to/47m4lqA" target="_blank" class="ad-title">Buy Now</a></div>
+            <div class="ad-slide"><a href="https://amzn.to/4lkvVYA" target="_blank"><img src="https://m.media-amazon.com/images/I/71dxcllI6RL._SL1500_.jpg" alt="Amazon Product 5" /></a><a href="https://amzn.to/4lkvVYA" target="_blank" class="ad-title">Buy Now</a></div>
+            <div class="ad-slide"><a href="https://amzn.to/3HrImE6" target="_blank"><img src="https://m.media-amazon.com/images/I/91G-YiPPeYL._SL1500_.jpg" alt="Amazon Product 6" /></a><a href="https://amzn.to/3HrImE6" target="_blank" class="ad-title">Buy Now</a></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const inputIds = ["initialInvestment", "currentValue", "years"];
+    const rates = [12, 15, 18];
+    const projectionYears = [5, 10, 20, 25, 30, 35];
+
+    function valueOf(id) {
+      const value = Number.parseFloat(document.getElementById(id).value);
+      return Number.isFinite(value) ? Math.max(0, value) : 0;
+    }
+
+    function formatCurrency(value) {
+      return "₹" + Math.round(value).toLocaleString("en-IN");
+    }
+
+    function numberToWords(num) {
+      const ones = ["", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+      const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+      if (String(num).length > 9) return "amount too large to spell";
+      const parts = String(num).padStart(9, "0").match(/^(\d{2})(\d{2})(\d{2})(\d)(\d{2})$/);
+      if (!parts) return "";
+      const pair = value => ones[Number(value)] || `${tens[value[0]]} ${ones[value[1]]}`;
+      let result = "";
+      if (parts[1] !== "00") result += `${pair(parts[1])} crore `;
+      if (parts[2] !== "00") result += `${pair(parts[2])} lakh `;
+      if (parts[3] !== "00") result += `${pair(parts[3])} thousand `;
+      if (parts[4] !== "0") result += `${ones[Number(parts[4])]} hundred `;
+      if (parts[5] !== "00") result += `${result ? "and " : ""}${pair(parts[5])}`;
+      return result.trim();
+    }
+
+    function updateProjection(initialInvestment) {
+      document.getElementById("projectionBody").innerHTML = projectionYears.map(years => `
+        <tr>
+          <td>${years}</td>
+          <td>${formatCurrency(initialInvestment)}</td>
+          ${rates.map(rate => `<td>${formatCurrency(initialInvestment * Math.pow(1 + rate / 100, years))}</td>`).join("")}
+        </tr>
+      `).join("");
+    }
+
+    function calculate() {
+      const initialInvestment = valueOf("initialInvestment");
+      const currentValue = valueOf("currentValue");
+      const years = valueOf("years");
+      updateProjection(initialInvestment);
+      if (currentValue <= 0) {
+        document.getElementById("result").innerHTML = "<strong>Enter your current investment value to calculate the return.</strong>";
+        return;
+      }
+      const gain = currentValue - initialInvestment;
+      const totalReturn = initialInvestment > 0 ? gain / initialInvestment * 100 : 0;
+      const annualizedReturn = initialInvestment > 0 && years > 0
+        ? (Math.pow(currentValue / initialInvestment, 1 / years) - 1) * 100
+        : 0;
+      document.getElementById("result").innerHTML = `
+        <strong>Initial Investment:</strong> ₹${initialInvestment.toFixed(2)}<br>
+        <strong>Current Value:</strong> ₹${currentValue.toFixed(2)}<br>
+        <strong>Total Return:</strong> ₹${gain.toFixed(2)}<br>
+        <strong>Return Percentage:</strong> ${totalReturn.toFixed(2)}%<br><br>
+        <strong>Annualized Return:</strong> ${annualizedReturn.toFixed(2)}%<br>
+        (${numberToWords(Math.floor(currentValue))})
+      `;
+    }
+
+    function persistInputs() {
+      inputIds.forEach(id => {
+        const element = document.getElementById(id);
+        const saved = Number.parseFloat(localStorage.getItem("returncalc_" + id));
+        if (Number.isFinite(saved)) element.value = Math.max(0, saved);
+        element.addEventListener("input", () => localStorage.setItem("returncalc_" + id, element.value));
+      });
+    }
+
+    if (localStorage.getItem("sipcalc_theme") === "dark") document.body.classList.add("dark");
+    document.getElementById("themeButton").addEventListener("click", () => {
+      const dark = document.body.classList.toggle("dark");
+      localStorage.setItem("sipcalc_theme", dark ? "dark" : "light");
+      document.querySelector(".more-menu").open = false;
+    });
+    const adGrid = document.querySelector(".ad-grid");
+    const firstAdPanel = document.getElementById("adPanel");
+    const secondAdPanel = firstAdPanel.cloneNode(true);
+    secondAdPanel.id = "adPanelSecond";
+    secondAdPanel.querySelector("#adSlider").id = "adSliderSecond";
+    adGrid.append(secondAdPanel);
+    const adSliders = [
+      document.getElementById("adSlider"),
+      document.getElementById("adSliderSecond")
+    ];
+    let currentAdIndex = 0;
+    const totalAds = adSliders[0].querySelectorAll(".ad-slide").length;
+    function showAds() {
+      adSliders[0].style.transform = `translateX(-${currentAdIndex * 100}%)`;
+      adSliders[1].style.transform = `translateX(-${((currentAdIndex + 1) % totalAds) * 100}%)`;
+    }
+    showAds();
+    setInterval(() => {
+      currentAdIndex = (currentAdIndex + 1) % totalAds;
+      showAds();
+    }, 5000);
+    persistInputs();
+    document.getElementById("calculateButton").addEventListener("click", calculate);
+    calculate();
+  </script>
+</body>
+</html>
